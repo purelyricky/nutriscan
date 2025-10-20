@@ -60,16 +60,6 @@ Unlike traditional OCR → text parsing pipelines, our vision-based approach off
 - **No Preprocessing**: No need for separate OCR, deskewing, or noise removal
 - **Higher Accuracy**: Modern vision models excel at document understanding
 
-### Why No S3 Storage?
-
-We removed S3 storage from the original template because:
-
-- PDFs are processed in real-time, not stored long-term
-- Direct file upload to API is more efficient
-- Reduces infrastructure complexity and costs
-- Both OpenAI and Gemini can process base64-encoded images directly
-- Better for privacy - documents aren't stored in cloud storage
-
 ## Installation & Setup
 
 ### Prerequisites
@@ -81,11 +71,9 @@ We removed S3 storage from the original template because:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/[your-username]/nutri-scan.git
+git clone https://github.com/purelyricky/nutri-scan.git
 cd nutri-scan
 ```
-
-> **Note:** Replace `[your-username]` with your GitHub username
 
 ### 2. Install Dependencies
 
