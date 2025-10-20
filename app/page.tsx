@@ -31,7 +31,6 @@ const allergenLabels: Record<string, { en: string; hu: string }> = {
 
 export default function Page() {
   const [file, setFile] = useState<File | null>(null);
-  const [pdfPreview, setPdfPreview] = useState<string | null>(null);
   const [productInfo, setProductInfo] = useState<ProductInfo | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [provider, setProvider] = useState<"openai" | "gemini">("gemini");
@@ -50,10 +49,6 @@ export default function Page() {
     setStatus("idle");
     setProductInfo(null);
     setErrorMessage("");
-
-    // Create preview URL
-    const fileUrl = URL.createObjectURL(selectedFile);
-    setPdfPreview(fileUrl);
   };
 
   const handleSubmit = async () => {
@@ -102,7 +97,6 @@ export default function Page() {
 
   const clearFile = () => {
     setFile(null);
-    setPdfPreview(null);
     setProductInfo(null);
     setStatus("idle");
     setErrorMessage("");

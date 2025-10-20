@@ -20,23 +20,6 @@ For nutritional values, use null if the value is not found in the document.
 
 Be thorough and extract all available information. Handle both structured tables and unstructured text formats.`;
 
-const EXTRACTION_PROMPT_HU = `Ön egy szakértő a táplálkozási információk és allergén adatok kivonásában az élelmiszeripari termékdokumentumokból.
-
-Elemezze ezt a termékdokumentumot és vonja ki a következő információkat:
-1. Terméknév
-2. Allergének (glutén, tojás, rákfélék, hal, földimogyoró, szója, tej, diófélék, zeller, mustár)
-3. Tápértékek 100g vagy 100ml-re vonatkozóan (energia kJ-ban és kcal-ban, zsír, telített zsír, szénhidrát, cukor, fehérje, só, nátrium)
-4. Összetevők listája (ha elérhető)
-5. Adag mérete (ha elérhető)
-6. Bármilyen további releváns információ
-
-A dokumentum lehet magyar vagy angol nyelvű. Észlelje a nyelvet és adja vissza az összes kivont szöveget UGYANAZON a nyelven, mint a forrásdokumentum.
-
-Az allergének esetében jelölje igaznak, ha jelen van, hamisnak, ha nincs jelen vagy nincs megemlítve.
-A tápértékek esetében használjon null értéket, ha az érték nem található a dokumentumban.
-
-Legyen alapos és vonja ki az összes elérhető információt. Kezelje a strukturált táblázatokat és a strukturálatlan szöveges formátumokat is.`;
-
 /**
  * Extract product information using OpenAI GPT-4o with Vision
  */
