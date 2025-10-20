@@ -102,7 +102,8 @@ export async function extractWithGemini(
     generationConfig: {
       temperature: 0.1,
       responseMimeType: "application/json",
-      responseSchema: zodToJsonSchema(productInfoSchema, "productInfoSchema"),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      responseSchema: zodToJsonSchema(productInfoSchema, "productInfoSchema") as any,
     },
   });
 
