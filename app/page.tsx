@@ -238,12 +238,57 @@ export default function Page() {
         </div>
       ) : status === "error" ? (
         <Card className="mx-auto w-full max-w-xl p-6">
-          <div className="flex flex-col items-center justify-center py-8 text-center">
+          <div className="flex flex-col items-center justify-center py-8">
             <AlertCircle className="mb-4 h-16 w-16 text-red-500" />
-            <h3 className="mb-2 text-xl font-semibold text-red-600">
+            <h3 className="mb-2 text-center text-xl font-semibold text-red-600">
               {lang === "hu" ? "Hiba történt" : "Error Occurred"}
             </h3>
-            <p className="text-sm text-gray-600">{errorMessage}</p>
+            <p className="mb-6 max-w-md text-center text-sm text-gray-600 whitespace-pre-wrap">
+              {errorMessage}
+            </p>
+
+            {/* Helpful suggestions */}
+            <div className="mt-4 w-full rounded-lg bg-gray-50 p-4 text-left">
+              <p className="mb-3 text-sm font-semibold text-gray-700">
+                {lang === "hu" ? "💡 Lehetséges megoldások:" : "💡 Possible solutions:"}
+              </p>
+              <ul className="list-disc space-y-2 pl-5 text-sm text-gray-600">
+                <li>
+                  {lang === "hu"
+                    ? "Próbálja meg a másik AI szolgáltatót (Google Gemini vagy OpenAI)"
+                    : "Try the other AI provider (Google Gemini or OpenAI)"}
+                </li>
+                <li>
+                  {lang === "hu"
+                    ? "Ellenőrizze, hogy a PDF nem jelszóval védett"
+                    : "Check that the PDF is not password-protected"}
+                </li>
+                <li>
+                  {lang === "hu"
+                    ? "Próbáljon kisebb fájlt feltölteni (kevesebb oldal)"
+                    : "Try uploading a smaller file (fewer pages)"}
+                </li>
+                <li>
+                  {lang === "hu"
+                    ? "Győződjön meg róla, hogy az API kulcsok helyesen vannak beállítva"
+                    : "Verify that your API keys are correctly configured"}
+                </li>
+                <li>
+                  {lang === "hu"
+                    ? "Próbálja újra menteni a PDF-et másik programmal"
+                    : "Try re-saving the PDF with a different program"}
+                </li>
+              </ul>
+            </div>
+
+            <Button
+              onClick={clearFile}
+              variant="outline"
+              className="mt-6"
+            >
+              <X className="mr-2 h-4 w-4" />
+              {lang === "hu" ? "Próbálja újra" : "Try Again"}
+            </Button>
           </div>
         </Card>
       ) : (
