@@ -1,12 +1,5 @@
-import * as pdfjsLib from "pdfjs-dist";
+import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
 import { TextItem } from "pdfjs-dist/types/src/display/api";
-
-// Configure PDF.js worker
-if (typeof window === "undefined") {
-  // Server-side only
-  const pdfjsWorker = await import("pdfjs-dist/build/pdf.worker.mjs");
-  pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
-}
 
 /**
  * Convert PDF buffer to base64-encoded images (one per page)
