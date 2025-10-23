@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 124 124" fill="none">
+<rect width="124" height="124" rx="24" fill="#F97316"/>
+
+<!-- Document/Paper shape -->
+<rect x="28" y="24" width="52" height="68" rx="3" fill="white"/>
+<path d="M 75 24 L 75 32 L 80 37 L 80 24 Z" fill="#FFF7ED"/>
+
+<!-- Nutrition label lines -->
+<rect x="35" y="34" width="30" height="2" rx="1" fill="#F97316" opacity="0.6"/>
+<rect x="35" y="40" width="38" height="2" rx="1" fill="#F97316" opacity="0.5"/>
+<rect x="35" y="46" width="25" height="1.5" rx="0.75" fill="#9CA3AF" opacity="0.7"/>
+<rect x="35" y="52" width="32" height="1.5" rx="0.75" fill="#9CA3AF" opacity="0.7"/>
+<rect x="35" y="58" width="28" height="1.5" rx="0.75" fill="#9CA3AF" opacity="0.7"/>
+<rect x="35" y="64" width="35" height="1.5" rx="0.75" fill="#9CA3AF" opacity="0.7"/>
+
+<!-- Allergen warning icon on document -->
+<circle cx="56" cy="78" r="7" fill="#FBBF24" opacity="0.9"/>
+<path d="M 56 72 L 56 78 M 56 81 L 56 82" stroke="#EA580C" stroke-width="2" stroke-linecap="round"/>
+
+<!-- Magnifying glass (scanner) -->
+<circle cx="75" cy="75" r="18.1641" fill="black"/>
+<circle cx="75" cy="75" r="13" fill="none" stroke="white" stroke-width="3"/>
+<rect x="86" y="86" width="5" height="16" rx="2.5" fill="black" transform="rotate(45 88.5 94)"/>
+
+<!-- Scanning beam effect -->
+<rect opacity="0.4" x="81.1328" y="80.7198" width="17.5687" height="17.3876" rx="4" transform="rotate(-45 81.1328 80.7198)" fill="#FDBA74"/>
+<line x1="68" y1="75" x2="82" y2="75" stroke="#FBBF24" stroke-width="1.5" opacity="0.7"/>
+<line x1="68" y1="71" x2="82" y2="71" stroke="#FBBF24" stroke-width="1" opacity="0.5"/>
+<line x1="68" y1="79" x2="82" y2="79" stroke="#FBBF24" stroke-width="1" opacity="0.5"/>
+
+<!-- Small food/allergen indicators -->
+<circle cx="25" cy="105" r="5" fill="#EF4444" opacity="0.8"/>
+<rect x="37" y="101" width="8" height="8" rx="1" fill="#FDE047" opacity="0.8"/>
+<circle cx="52" cy="105" r="5" fill="#3B82F6" opacity="0.8"/>
+</svg>

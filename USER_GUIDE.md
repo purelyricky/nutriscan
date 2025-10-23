@@ -1,364 +1,176 @@
-# NutriScan User Guide
+# NutriScanner User Guide
 
-Welcome to NutriScan! This guide will help you get started with extracting nutritional information and allergen data from your food product documents.
-
-## What is NutriScan?
-
-NutriScan is an AI-powered tool that automatically reads food product PDFs and extracts:
-- **Allergen information** (gluten, milk, eggs, nuts, etc.)
-- **Nutritional values** (calories, protein, fat, carbohydrates, etc.)
-- **Ingredients lists**
-- **Product details**
-
-No more manual data entry - just upload your PDF and let AI do the work!
-
----
+Welcome to NutriScanner! This guide will help you extract allergen information and nutritional values from food product PDFs.
 
 ## Getting Started
 
-### Step 1: Open NutriScan
+### What is NutriScanner?
 
-Navigate to the NutriScan website in your web browser. You'll see a clean interface with two main sections:
-- **Left side**: Upload area
-- **Right side**: Results display
+NutriScanner is a web application that uses AI to automatically extract:
+- **Allergen information** (10 common allergens)
+- **Nutritional values** (Energy, Fat, Carbohydrate, Sugar, Protein, Sodium)
 
-### Step 2: Upload Your PDF
+from food product description PDFs.
 
-1. Click on the upload area or drag and drop your PDF file
-2. Make sure your file is:
-   - **PDF format** (.pdf extension)
-   - **Food product documentation** (nutrition labels, product specs, etc.)
-   - **In English or Hungarian**
+### Supported Documents
 
-**Supported PDF types:**
-- Text-based PDFs (digital documents)
-- Scanned PDFs (images of printed documents)
-- Multi-page documents
+NutriScanner can handle:
+- ✅ Regular PDF documents
+- ✅ Scanned (image-based) PDFs
+- ✅ Hungarian language documents
+- ✅ English language documents
+- ✅ Documents with both languages
+- ✅ Unstructured data (tables, lists, paragraphs)
 
-### Step 3: Choose AI Provider
+**File Size Limit**: Maximum 5MB per PDF
 
-Select which AI model to use for extraction:
+## How to Use NutriScanner
 
-- **Google Gemini 2.0** (Default)
-  - Faster processing
-  - More cost-effective
-  - Great for most documents
+### Step 1: Select AI Model
 
-- **OpenAI GPT-4o**
-  - Higher accuracy
-  - Better with complex layouts
-  - Slightly slower
+Choose your preferred AI model:
+- **Google Gemini Pro**: Google's advanced AI model
+- **OpenAI GPT-4**: OpenAI's powerful language model
 
-**Tip:** Start with Gemini - it works great for most cases!
+Both models provide excellent results. Choose based on your API key availability.
 
-### Step 4: Extract Data
+### Step 2: Upload PDF
 
-Click the **"Extract Data"** or **"Elemzés Indítása"** button (Hungarian).
+You have two options to upload your PDF:
 
-**What happens next:**
-1. Your PDF is uploaded securely
-2. AI analyzes the document (takes 10-20 seconds)
-3. Results appear on the right side
+**Option A: Drag & Drop**
+1. Drag your PDF file
+2. Drop it onto the upload area
 
-### Step 5: Review Results
+**Option B: Click to Browse**
+1. Click on the upload area
+2. Select your PDF file from your computer
 
-The results are organized into clear sections:
+### Step 3: Extract Information
 
-#### Product Name
-The name of the food product is displayed at the top.
+1. Click the "Extract Information" button
+2. Wait while the AI analyzes your document
+3. You'll see a progress bar during extraction
 
-#### Allergens
-A grid showing all 10 common allergens:
-- ✅ **Green boxes** = Allergen NOT present (safe)
-- ⚠️ **Red boxes** = Allergen IS present (warning)
+### Step 4: Review Results
 
-**Allergens checked:**
-- Gluten (Glutén)
-- Egg (Tojás)
-- Crustaceans (Rákfélék)
-- Fish (Hal)
-- Peanut (Földimogyoró)
-- Soy (Szója)
-- Milk (Tej)
-- Tree Nuts (Diófélék)
-- Celery (Zeller)
-- Mustard (Mustár)
+Once extraction is complete, you'll see two tables:
 
-#### Nutritional Values
-All nutritional information per 100g or 100ml:
-- **Energy**: Listed in both kJ and kcal
-- **Fat**: Total fat and saturated fat
-- **Carbohydrate**: Total carbs and sugars
-- **Protein**: Protein content
-- **Salt/Sodium**: Salt or sodium content
+**Allergens Table**
+- Shows all 10 allergens with their names in both English and Hungarian
+- ✓ (green checkmark) = Allergen is present
+- ✗ (red X) = Allergen is not present
 
-#### Additional Information
-- **Ingredients**: Full list of ingredients (if available)
-- **Serving Size**: Recommended serving size (if available)
-- **Other Details**: Any other relevant information
+**Nutritional Values Table**
+- Shows 6 nutritional components
+- Values include their units (g, mg, kJ, kcal)
+- "Not found" indicates the value wasn't detected in the document
 
----
+### Step 5: Scan Another Document
+
+Click "Scan Another" button to analyze a new PDF document.
+
+## Allergens Detected
+
+NutriScanner identifies these 10 common allergens:
+
+| English | Hungarian |
+|---------|-----------|
+| Gluten | Glutén |
+| Egg | Tojás |
+| Crustaceans | Rák |
+| Fish | Hal |
+| Peanut | Földimogyoró |
+| Soy | Szója |
+| Milk | Tej |
+| Tree nuts | Diófélék |
+| Celery | Zeller |
+| Mustard | Mustár |
+
+## Nutritional Values Extracted
+
+| Nutrient | Unit | Hungarian |
+|----------|------|-----------|
+| Energy | kJ/kcal | Energia |
+| Fat | g | Zsír |
+| Carbohydrate | g | Szénhidrát |
+| Sugar | g | Cukor |
+| Protein | g | Fehérje |
+| Sodium | mg/g | Nátrium |
 
 ## Tips for Best Results
 
 ### Document Quality
-- ✅ **DO**: Use high-resolution scans (300 DPI or higher)
-- ✅ **DO**: Ensure text is readable and not blurry
-- ✅ **DO**: Make sure nutritional tables are fully visible
-- ❌ **DON'T**: Use password-protected PDFs
-- ❌ **DON'T**: Upload extremely large files (> 50MB)
+- Use clear, readable PDFs when possible
+- Scanned documents should be at least 300 DPI
+- Avoid heavily distorted or blurry images
 
-### If Results Aren't Accurate
+### Document Structure
+- The AI can handle any format (tables, lists, paragraphs)
+- No specific structure is required
+- Both structured and unstructured data are supported
 
-1. **Try the other AI provider**
-   - Switch between Gemini and OpenAI
-   - Sometimes one works better than the other
+### Language
+- Documents can be in Hungarian, English, or both
+- The AI automatically detects the language
+- Mixed-language documents are fully supported
 
-2. **Check your PDF**
-   - Is the nutrition table clear?
-   - Is the text legible?
-   - Are important sections cut off?
+### Allergen Information
+- Allergens must be explicitly mentioned in the document
+- The AI marks allergens as present only when clearly stated
+- "May contain" warnings are not marked as confirmed allergens
 
-3. **Re-scan your document** (if it's a scan)
-   - Use higher resolution
-   - Ensure good lighting
-   - Keep document flat and aligned
-
----
-
-## Language Support
-
-### Automatic Language Detection
-
-NutriScan automatically detects whether your document is in:
-- **English** 🇬🇧
-- **Hungarian** 🇭🇺
-
-The interface and results will adapt to match your document's language!
-
-### Hungarian Interface
-
-If your PDF is in Hungarian, you'll see:
-- "Allergének" instead of "Allergens"
-- "Tápértékek" instead of "Nutritional Values"
-- "Összetevők" instead of "Ingredients"
-- All labels in Hungarian
-
----
-
-## Common Questions
-
-### How long does extraction take?
-
-Typically **10-20 seconds**, depending on:
-- Document complexity
-- Number of pages
-- AI provider selected
-
-### Is my data secure?
-
-Yes! Your PDFs are:
-- Processed in real-time
-- Not stored on any server
-- Deleted immediately after processing
-- Never shared with third parties
-
-### What if some values are missing?
-
-If the AI can't find certain information in your document, those fields will simply not appear in the results. This is normal - not all documents contain all information.
-
-### Can I process multiple documents?
-
-Yes! After reviewing your results, click **"Clear"** or **"Törlés"** to upload another document.
-
-### What file size is supported?
-
-- **Recommended**: Under 10MB
-- **Maximum**: 50MB
-- **Pages**: Up to 20 pages
-
----
-
-## Example Workflow
-
-### Scenario: Analyzing a Hungarian Product
-
-1. **You have**: A scanned PDF of "Édes Anna Paprikakrém" product specification
-2. **Upload**: Drag the PDF to NutriScan
-3. **Select**: Gemini (default)
-4. **Click**: "Elemzés Indítása"
-5. **Wait**: ~15 seconds
-6. **Results**:
-   - Product Name: "UNIVER ÉDES ANNA 200 GR"
-   - Allergens: Mustard detected (red), others safe (green)
-   - Nutritional Values: Full breakdown displayed
-   - Ingredients: Listed in Hungarian
-   - Language: Hungarian interface
-
-### Scenario: Analyzing an English Product
-
-1. **You have**: A digital PDF of nutrition facts
-2. **Upload**: Click upload area and select file
-3. **Select**: OpenAI GPT-4o (for high accuracy)
-4. **Click**: "Extract Data"
-5. **Wait**: ~12 seconds
-6. **Results**:
-   - Product Name: "Organic Pork Tenderloin"
-   - Allergens: All safe (green)
-   - Nutritional Values: Complete profile
-   - Language: English interface
-
----
+### Nutritional Values
+- Values are extracted with their units
+- If multiple formats exist (e.g., kJ and kcal for energy), both may be captured
+- Missing values will show as "Not found"
 
 ## Troubleshooting
 
-### "Please upload a PDF file" error
-**Cause**: You're trying to upload a non-PDF file
-**Solution**: Convert your file to PDF first (use Word, scanner software, or online converters)
+### PDF Won't Upload
+- Check file size (must be under 5MB)
+- Ensure the file is a PDF (not DOC, JPG, etc.)
+- Try converting scanned images to PDF format
 
-### "Failed to process PDF file" error
-**Cause**: PDF is corrupted or protected
-**Solution**: Try re-saving or re-scanning the PDF
+### Extraction Failed
+- Verify your internet connection
+- Check that API keys are configured correctly
+- Try a different AI model
+- Ensure the PDF contains readable text or clear images
 
-### "OPENAI_API_KEY is not configured" error
-**Cause**: OpenAI provider is not set up (administrator issue)
-**Solution**: Use Gemini provider instead, or contact administrator
+### Incorrect Results
+- Verify the source document contains the information
+- Try uploading a clearer version of the document
+- Switch to a different AI model for comparison
 
-### Slow extraction (> 30 seconds)
-**Cause**: Large file or complex document
-**Solution**:
-- Try splitting multi-page PDFs
-- Compress the PDF file
-- Use Gemini (usually faster)
+### Slow Processing
+- Large PDFs take longer to process
+- Scanned documents require OCR processing
+- Complex layouts may need more time
 
-### Inaccurate allergen detection
-**Cause**: Document doesn't clearly list allergens
-**Solution**:
-- Verify allergen information is visible in PDF
-- Try the alternative AI provider
-- Manually verify critical allergen information
+## Privacy & Security
 
----
+- PDFs are processed securely
+- Files are not stored permanently
+- Data is transmitted via encrypted connections
+- API keys are stored securely in environment variables
 
-## Keyboard Shortcuts
+## Example Documents
 
-- **Upload file**: Click upload area or drag & drop
-- **Clear file**: Click X button or "Clear" button
-- **Scroll results**: Use mouse wheel or touchpad
-
----
-
-## Mobile Usage
-
-NutriScan works on mobile devices!
-
-### Mobile Tips:
-- Use landscape mode for better layout
-- Tap upload area to select PDF from your device
-- Results scroll smoothly
-- All features work the same as desktop
-
----
-
-## Export Results (Future Feature)
-
-Currently, results are displayed on screen. Future versions will support:
-- Export to Excel
-- Export to CSV
-- Print-friendly format
-- Email results
-- Save as JSON
-
----
-
-## Privacy & Data Policy
-
-### What We Process
-- PDF documents (temporarily)
-- Extracted text and data
-- AI analysis results
-
-### What We DON'T Store
-- Your PDF files
-- Personal information
-- Usage history
-- Extracted data
-
-### Third-Party Services
-- OpenAI API (if using GPT-4o)
-- Google Gemini API (if using Gemini)
-
-Both services process data according to their privacy policies.
-
----
+For testing, you can use the example food product PDFs available in the project documentation.
 
 ## Support
 
-### Need Help?
+For technical issues or questions:
+1. Check the DEVELOPER_DOCUMENTATION.md for technical details
+2. Review the README.md for setup instructions
+3. Contact your system administrator
 
-**For technical issues:**
-- Check this user guide
-- Try the alternative AI provider
-- Verify your PDF is valid
+## Version Information
 
-**For feature requests:**
-- Submit feedback through your organization
-- Suggest improvements
-
-**For bugs:**
-- Note the error message
-- Try to reproduce the issue
-- Report to administrator with details
+**Current Version**: 1.0.0
+**Last Updated**: October 2025
 
 ---
 
-## Best Practices
-
-### ✅ DO:
-- Use clear, high-quality PDFs
-- Verify critical allergen information manually
-- Try both AI providers for comparison
-- Keep documents under 10MB
-
-### ❌ DON'T:
-- Upload sensitive personal information
-- Rely solely on AI for medical/allergy decisions
-- Upload extremely large files
-- Use password-protected PDFs
-
----
-
-## Glossary
-
-**AI Provider**: The artificial intelligence service used to analyze your document (Gemini or OpenAI)
-
-**Allergen**: A substance that can cause an allergic reaction
-
-**Base64**: A way to encode files for secure transfer (technical detail)
-
-**Extraction**: The process of pulling data from your document
-
-**kJ/kcal**: Units of energy measurement (kilojoules/kilocalories)
-
-**PDF**: Portable Document Format - a common file type for documents
-
-**Saturated Fat**: A type of fat typically listed separately in nutrition facts
-
-**Structured Data**: Information organized in a consistent, readable format
-
----
-
-## Version History
-
-- **v1.0.0** (2025-10-20)
-  - Initial release
-  - Support for English and Hungarian
-  - Gemini and OpenAI integration
-  - 10 allergen types
-  - Complete nutritional value extraction
-
----
-
-**Happy Scanning! 🎉**
-
-For additional information, visit our documentation or contact support.
+Thank you for using NutriScanner! We hope this tool makes nutritional information extraction quick and easy.

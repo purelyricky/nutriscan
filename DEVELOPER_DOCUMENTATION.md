@@ -1,194 +1,308 @@
-# Developer Documentation - NutriScan
+# NutriScanner Developer Documentation
 
 ## Table of Contents
 
 1. [Architecture Overview](#architecture-overview)
-2. [Core Components](#core-components)
-3. [PDF Processing Pipeline](#pdf-processing-pipeline)
-4. [AI Integration](#ai-integration)
-5. [Data Schemas](#data-schemas)
-6. [API Endpoints](#api-endpoints)
-7. [Frontend Components](#frontend-components)
-8. [Testing Strategy](#testing-strategy)
-9. [Best Practices](#best-practices)
-10. [Deployment Guide](#deployment-guide)
-
----
+2. [Project Structure](#project-structure)
+3. [Technology Stack](#technology-stack)
+4. [Setup & Installation](#setup--installation)
+5. [API Routes](#api-routes)
+6. [Components](#components)
+7. [Schemas & Validation](#schemas--validation)
+8. [AI Model Integration](#ai-model-integration)
+9. [Deployment](#deployment)
+10. [Troubleshooting](#troubleshooting)
 
 ## Architecture Overview
 
-### Technology Stack
+NutriScanner follows a modern Next.js 15 architecture with App Router:
 
 ```
-Frontend (Client-Side)
-├── Next.js 14 (App Router)
-├── React 18 + TypeScript
-├── Tailwind CSS
-└── Shadcn/ui Components
-
-Backend (API Routes)
-├── Next.js API Routes (Node.js)
-├── PDF.js (pdfjs-dist)
-├── OpenAI SDK
-├── Google Generative AI SDK
-└── Zod (Schema Validation)
-
-AI Providers
-├── OpenAI GPT-4o
-└── Google Gemini 2.0 Flash
+┌─────────────┐         ┌──────────────┐         ┌─────────────┐
+│   Browser   │ ──────> │   Next.js    │ ──────> │  AI Model   │
+│  (Client)   │ <────── │  (Server)    │ <────── │ (Gemini/GPT)│
+└─────────────┘         └──────────────┘         └─────────────┘
+      │                        │
+      │                        │
+      ▼                        ▼
+  React UI              API Routes
+  Components            /api/extract
 ```
 
-### Request Flow
+### Data Flow
+
+1. User uploads PDF via React component
+2. PDF is encoded to base64 on client
+3. Client sends request to `/api/extract` with PDF data and model selection
+4. Server forwards PDF to selected AI model (Gemini or OpenAI)
+5. AI model processes PDF using vision/OCR capabilities
+6. Structured data is streamed back to client
+7. Client displays results in tables
+
+## Project Structure
 
 ```
-User → Upload PDF
-  ↓
-Frontend (page.tsx)
-  ↓ base64-encoded PDF
-API Route (/api/extract)
-  ↓
-PDF to Images (pdf-utils.ts)
-  ↓ array of base64 images
-AI Extractor (ai-extractors.ts)
-  ↓ structured JSON
-Schema Validation (schemas.ts)
-  ↓ validated ProductInfo
-Frontend Display
+nutriscanner/
+├── app/
+│   ├── (preview)/                  # Main application route group
+│   │   ├── page.tsx               # Main page component
+│   │   ├── layout.tsx             # Root layout with metadata
+│   │   └── globals.css            # Global styles
+│   └── api/
+│       └── extract/
+│           └── route.ts           # Extraction API endpoint
+│
+├── components/
+│   └── ui/
+│       ├── results-table.tsx      # Results display component
+│       ├── file-upload.tsx        # File upload component
+│       ├── button.tsx             # Button component
+│       ├── card.tsx               # Card component
+│       ├── progress.tsx           # Progress bar component
+│       ├── select.tsx             # Select dropdown component
+│       └── ...                    # Other shadcn/ui components
+│
+├── lib/
+│   ├── schemas.ts                 # Zod validation schemas
+│   └── utils.ts                   # Utility functions
+│
+├── .env.local                     # Environment variables (not in git)
+├── .env.example                   # Environment template
+├── package.json                   # Dependencies
+├── tsconfig.json                  # TypeScript configuration
+├── tailwind.config.ts             # Tailwind CSS configuration
+├── next.config.mjs                # Next.js configuration
+├── README.md                      # Project README
+├── USER_GUIDE.md                  # User documentation
+└── DEVELOPER_DOCUMENTATION.md     # This file
 ```
 
----
+## Technology Stack
 
-## Core Components
+### Core Framework
+- **Next.js 15.1.0**: React framework with App Router
+- **React 19.0.0**: UI library
+- **TypeScript 5.7.2**: Type safety
 
-### 1. PDF Processing (`lib/pdf-utils.ts`)
+### AI Integration
+- **Vercel AI SDK 4.0.16**: Unified AI interface
+- **@ai-sdk/google**: Google Gemini integration
+- **@ai-sdk/openai**: OpenAI GPT-4 integration
 
-#### `pdfToImages(pdfBuffer: Buffer)`
+### UI & Styling
+- **Tailwind CSS 3.4.16**: Utility-first CSS
+- **shadcn/ui**: Component library
+- **Radix UI**: Headless UI components
+- **Framer Motion 11.14.1**: Animations
+- **Lucide React**: Icons
 
-Converts PDF pages to base64-encoded PNG images.
+### Validation & Data
+- **Zod 3.24.1**: Schema validation
+- **clsx**: Conditional class names
+- **tailwind-merge**: Merge Tailwind classes
 
-**Why this approach?**
-- Works uniformly for text-based and scanned PDFs
-- High-quality image output (2x scale)
-- Compatible with both OpenAI and Gemini vision APIs
+### Developer Experience
+- **ESLint**: Code linting
+- **PostCSS**: CSS processing
+- **Sonner**: Toast notifications
 
-**Implementation Details:**
-```typescript
-// PDF.js configuration
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+## Setup & Installation
 
-// For each page:
-// 1. Load PDF document
-// 2. Get page viewport (scale 2.0 for quality)
-// 3. Render to canvas
-// 4. Convert canvas to base64 PNG
+### Prerequisites
+
+```bash
+Node.js >= 18.0.0
+npm >= 9.0.0
 ```
 
-**Performance:**
-- ~1-3 seconds per page
-- Memory usage: ~10-20MB per page
+### Step 1: Clone Repository
 
-#### `extractTextFromPDF(pdfBuffer: Buffer)`
-
-Extracts raw text from text-based PDFs (currently unused but available for optimization).
-
----
-
-### 2. AI Extractors (`lib/ai-extractors.ts`)
-
-#### `extractWithOpenAI(images: string[])`
-
-**OpenAI GPT-4o Integration:**
-
-```typescript
-// Features used:
-// - Vision capabilities (image understanding)
-// - Structured outputs (JSON Schema)
-// - High detail mode for images
-
-const completion = await openai.chat.completions.create({
-  model: "gpt-4o",
-  messages: [
-    { role: "system", content: EXTRACTION_PROMPT },
-    {
-      role: "user",
-      content: [
-        { type: "text", text: "..." },
-        { type: "image_url", image_url: { url: imageData, detail: "high" } }
-      ]
-    }
-  ],
-  response_format: {
-    type: "json_schema",
-    json_schema: {
-      name: "product_info",
-      strict: true,
-      schema: zodToJsonSchema(productInfoSchema)
-    }
-  },
-  temperature: 0.1  // Low for consistency
-});
+```bash
+git clone https://github.com/yourusername/nutriscanner.git
+cd nutriscanner
 ```
 
-**Advantages:**
-- Strict schema adherence (guaranteed valid JSON)
-- High accuracy for complex layouts
-- Excellent language understanding
+### Step 2: Install Dependencies
 
-**Limitations:**
-- Higher cost (~$0.005-0.01 per document)
-- Slower response time (~10-15 seconds)
-
-#### `extractWithGemini(images: string[])`
-
-**Google Gemini 2.0 Flash Integration:**
-
-```typescript
-const model = genAI.getGenerativeModel({
-  model: "gemini-2.0-flash-exp",
-  generationConfig: {
-    temperature: 0.1,
-    responseMimeType: "application/json",
-    responseSchema: zodToJsonSchema(productInfoSchema)
-  }
-});
-
-const result = await model.generateContent([
-  EXTRACTION_PROMPT,
-  "Instructions...",
-  ...imageParts  // Base64 images
-]);
+```bash
+npm install --legacy-peer-deps
 ```
 
-**Advantages:**
-- Very cost-effective (~$0.0001-0.0005 per document)
-- Fast response time (~5-10 seconds)
-- Native document understanding
+Note: `--legacy-peer-deps` may be needed due to React 19 peer dependency conflicts with some libraries.
 
-**Limitations:**
-- Less strict schema adherence (may require validation)
-- Occasional hallucinations with complex tables
+### Step 3: Configure Environment
 
----
+Create `.env.local` file:
 
-### 3. Data Schemas (`lib/schemas.ts`)
+```env
+GOOGLE_GENERATIVE_AI_API_KEY=your_google_api_key
+OPENAI_API_KEY=your_openai_api_key
+```
 
-#### Schema Design Philosophy
+**Getting API Keys:**
+- Google Gemini: https://ai.google.dev/
+- OpenAI: https://platform.openai.com/api-keys
 
-We use **Zod** for runtime validation and type inference:
+### Step 4: Run Development Server
+
+```bash
+npm run dev
+```
+
+Visit http://localhost:3000
+
+### Step 5: Build for Production
+
+```bash
+npm run build
+npm start
+```
+
+## API Routes
+
+### POST /api/extract
+
+Extracts allergen and nutritional information from PDF.
+
+**Request:**
 
 ```typescript
-// Design pattern:
-// 1. Define Zod schema
-export const allergenSchema = z.object({...});
-
-// 2. Infer TypeScript type
-export type Allergen = z.infer<typeof allergenSchema>;
-
-// 3. Validate at runtime
-const validated = allergenSchema.parse(data);
+{
+  files: Array<{
+    name: string;
+    type: string;
+    data: string; // base64 encoded PDF
+  }>;
+  model: "gemini" | "openai";
+}
 ```
 
-#### Allergen Schema
+**Response (Streamed):**
+
+```typescript
+{
+  allergens: {
+    gluten: boolean;
+    egg: boolean;
+    crustaceans: boolean;
+    fish: boolean;
+    peanut: boolean;
+    soy: boolean;
+    milk: boolean;
+    treeNuts: boolean;
+    celery: boolean;
+    mustard: boolean;
+  };
+  nutritionalValues: {
+    energy?: string;
+    fat?: string;
+    carbohydrate?: string;
+    sugar?: string;
+    protein?: string;
+    sodium?: string;
+  };
+  detectedLanguage: "hungarian" | "english" | "both" | "unknown";
+  productName?: string;
+  confidence?: "high" | "medium" | "low";
+}
+```
+
+**Implementation:**
+
+```typescript
+// app/api/extract/route.ts
+import { extractionResultSchema } from "@/lib/schemas";
+import { google } from "@ai-sdk/google";
+import { openai } from "@ai-sdk/openai";
+import { streamObject } from "ai";
+
+export async function POST(req: Request) {
+  const { files, model } = await req.json();
+
+  const selectedModel = model === "openai"
+    ? openai("gpt-4o")
+    : google("gemini-1.5-pro-latest");
+
+  const result = streamObject({
+    model: selectedModel,
+    messages: [/* ... */],
+    schema: extractionResultSchema,
+  });
+
+  return result.toTextStreamResponse();
+}
+```
+
+## Components
+
+### Main Page Component
+
+**Location:** `app/(preview)/page.tsx`
+
+**Key Features:**
+- File upload with drag & drop
+- Model selection (Gemini/OpenAI)
+- Progress tracking
+- Results display
+- Error handling
+
+**State Management:**
+
+```typescript
+const [files, setFiles] = useState<File[]>([]);
+const [extractionResult, setExtractionResult] = useState<ExtractionResult | null>(null);
+const [selectedModel, setSelectedModel] = useState<"gemini" | "openai">("gemini");
+```
+
+**Hooks Used:**
+- `experimental_useObject`: Streaming AI responses
+- `useState`: Component state
+- `AnimatePresence`: Animations
+
+### ResultsTable Component
+
+**Location:** `components/ui/results-table.tsx`
+
+**Props:**
+
+```typescript
+interface ResultsTableProps {
+  result: ExtractionResult;
+}
+```
+
+**Features:**
+- Product information card
+- Allergens table with visual indicators
+- Nutritional values table
+- Bilingual labels (English/Hungarian)
+
+### FileUpload Component
+
+**Location:** `components/ui/file-upload.tsx`
+
+**Props:**
+
+```typescript
+interface FileUploadComponentProps {
+  onFileChange: (files: File[]) => void;
+  selectedFiles: File[];
+  isDragging: boolean;
+  setIsDragging: (isDragging: boolean) => void;
+}
+```
+
+**Features:**
+- Drag & drop support
+- File type validation (PDF only)
+- File size validation (5MB max)
+- Visual feedback
+
+## Schemas & Validation
+
+### Extraction Result Schema
+
+**Location:** `lib/schemas.ts`
 
 ```typescript
 export const allergenSchema = z.object({
@@ -203,545 +317,262 @@ export const allergenSchema = z.object({
   celery: z.boolean(),
   mustard: z.boolean(),
 });
-```
 
-**Design Decision:** Boolean instead of nullable
-- Missing allergen info = `false` (safer default)
-- Explicit presence = `true`
-- Simpler UI logic
+export const nutritionalValueSchema = z.object({
+  energy: z.string().optional(),
+  fat: z.string().optional(),
+  carbohydrate: z.string().optional(),
+  sugar: z.string().optional(),
+  protein: z.string().optional(),
+  sodium: z.string().optional(),
+});
 
-#### Nutrition Schema
-
-```typescript
-export const nutritionSchema = z.object({
-  energy: z.object({
-    kj: z.number().nullable(),
-    kcal: z.number().nullable()
-  }),
-  fat: z.number().nullable(),
-  saturatedFat: z.number().nullable(),
-  carbohydrate: z.number().nullable(),
-  sugar: z.number().nullable(),
-  protein: z.number().nullable(),
-  salt: z.number().nullable(),
-  sodium: z.number().nullable(),
+export const extractionResultSchema = z.object({
+  allergens: allergenSchema,
+  nutritionalValues: nutritionalValueSchema,
+  detectedLanguage: z.enum(["hungarian", "english", "both", "unknown"]),
+  productName: z.string().optional(),
+  confidence: z.enum(["high", "medium", "low"]).optional(),
 });
 ```
 
-**Design Decision:** Nullable numbers
-- `null` = value not found in document
-- Allows distinguishing "not found" from "zero"
-- Frontend can conditionally render
+## AI Model Integration
 
----
-
-## PDF Processing Pipeline
-
-### Step-by-Step Breakdown
-
-#### 1. Frontend File Upload (`app/page.tsx`)
+### Gemini Integration
 
 ```typescript
-const handleFileUpload = async (event) => {
-  const file = event.target.files?.[0];
+import { google } from "@ai-sdk/google";
 
-  // Validation
-  if (file.type !== "application/pdf") {
-    alert("Please upload a PDF file");
-    return;
-  }
-
-  // Store file locally (no upload yet)
-  setFile(file);
-};
+const model = google("gemini-1.5-pro-latest");
 ```
 
-#### 2. Convert to Base64
+**Capabilities:**
+- Native PDF processing
+- OCR for scanned documents
+- Multi-language support
+- Vision capabilities for images
+
+**API Key:** `GOOGLE_GENERATIVE_AI_API_KEY`
+
+### OpenAI Integration
 
 ```typescript
-const handleSubmit = async () => {
-  const reader = new FileReader();
-  const base64File = await new Promise<string>((resolve) => {
-    reader.onload = () => resolve(reader.result as string);
-    reader.readAsDataURL(file);
-  });
+import { openai } from "@ai-sdk/openai";
 
-  // Send to API
-  await fetch("/api/extract", {
-    method: "POST",
-    body: JSON.stringify({ file: base64File, provider })
-  });
-};
+const model = openai("gpt-4o");
 ```
 
-#### 3. API Processing (`app/api/extract/route.ts`)
+**Capabilities:**
+- Advanced PDF understanding
+- OCR via vision API
+- Excellent structured output
+- Multi-language processing
+
+**API Key:** `OPENAI_API_KEY`
+
+### System Prompt
+
+The AI models receive this system prompt:
+
+```
+You are an expert nutritional information extraction assistant.
+
+IMPORTANT INSTRUCTIONS:
+1. The document may be in Hungarian, English, or both languages - handle both gracefully
+2. The document may be a scanned image or a regular PDF - extract text accordingly
+3. The data may be unstructured, in tables, or in lists - parse all formats
+4. For allergens, mark as true ONLY if explicitly mentioned as present/contains
+5. For nutritional values, extract the exact values WITH their units
+6. If a value is not found, leave it as undefined/null
+7. Detect the primary language used in the document
+8. Extract the product name if clearly stated
+```
+
+### Streaming Responses
+
+The API uses streaming for real-time updates:
 
 ```typescript
-export async function POST(req: NextRequest) {
-  // 1. Parse and validate request
-  const { file, provider } = requestSchema.parse(await req.json());
-
-  // 2. Decode base64 to Buffer
-  const base64Data = file.replace(/^data:application\/pdf;base64,/, "");
-  const pdfBuffer = Buffer.from(base64Data, "base64");
-
-  // 3. Convert PDF to images
-  const { images, pageCount } = await pdfToImages(pdfBuffer);
-
-  // 4. Extract with AI
-  const productInfo = await extractProductInfo(images, provider);
-
-  // 5. Return structured data
-  return NextResponse.json({ success: true, data: productInfo });
-}
-```
-
-#### 4. PDF to Images (`lib/pdf-utils.ts`)
-
-```typescript
-export async function pdfToImages(pdfBuffer: Buffer) {
-  const pdf = await pdfjsLib.getDocument({ data: pdfBuffer }).promise;
-  const images: string[] = [];
-
-  for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-    const page = await pdf.getPage(pageNum);
-    const viewport = page.getViewport({ scale: 2.0 });
-
-    // Render to canvas
-    const canvas = createCanvas(viewport.width, viewport.height);
-    await page.render({ canvasContext: canvas.getContext("2d"), viewport }).promise;
-
-    // Convert to base64
-    images.push(canvas.toDataURL("image/png"));
-  }
-
-  return { images, pageCount: pdf.numPages };
-}
-```
-
----
-
-## AI Integration
-
-### Prompt Engineering
-
-#### English Prompt (`EXTRACTION_PROMPT_EN`)
-
-```typescript
-const EXTRACTION_PROMPT_EN = `You are an expert at extracting nutritional information and allergen data from food product documents.
-
-Analyze this product document and extract:
-1. Product name
-2. Allergens (mark true if present, false otherwise)
-3. Nutritional values per 100g/100ml (use null if not found)
-4. Ingredients list (if available)
-5. Serving size (if available)
-
-The document may be in Hungarian or English. Detect the language and return extracted text in the SAME language.
-
-Be thorough and handle both structured tables and unstructured text formats.`;
-```
-
-**Key Techniques:**
-- Clear role definition ("You are an expert...")
-- Explicit instructions for edge cases (null vs false)
-- Language detection requirement
-- Format flexibility instruction
-
-#### Hungarian Prompt (`EXTRACTION_PROMPT_HU`)
-
-Identical content, translated to Hungarian for potential future optimization.
-
-### Structured Output Configuration
-
-#### OpenAI (Strict Schema)
-
-```typescript
-response_format: {
-  type: "json_schema",
-  json_schema: {
-    name: "product_info",
-    strict: true,  // Enforces exact schema match
-    schema: zodToJsonSchema(productInfoSchema)
-  }
-}
-```
-
-**Benefits:**
-- Guaranteed valid JSON
-- No parsing errors
-- Type-safe extraction
-
-#### Gemini (Schema Guidance)
-
-```typescript
-generationConfig: {
-  responseMimeType: "application/json",
-  responseSchema: zodToJsonSchema(productInfoSchema)
-}
-```
-
-**Benefits:**
-- Still provides JSON
-- More flexible (can handle edge cases)
-- Slightly less strict but faster
-
----
-
-## API Endpoints
-
-### POST `/api/extract`
-
-#### Request
-
-```typescript
-interface ExtractRequest {
-  file: string;  // Base64-encoded PDF (with data URI prefix)
-  provider: "openai" | "gemini";  // AI provider selection
-}
-```
-
-**Example:**
-```json
-{
-  "file": "data:application/pdf;base64,JVBERi0xLjQK...",
-  "provider": "gemini"
-}
-```
-
-#### Response (Success)
-
-```typescript
-interface ExtractResponse {
-  success: true;
-  data: ProductInfo;
-  pageCount: number;
-}
-```
-
-**Example:**
-```json
-{
-  "success": true,
-  "data": {
-    "productName": "Édes Anna Paprika",
-    "language": "hu",
-    "allergens": {
-      "gluten": false,
-      "egg": false,
-      "milk": false,
-      ...
-    },
-    "nutritionalValues": {
-      "energy": { "kj": 1250, "kcal": 300 },
-      "fat": 15.0,
-      ...
-    },
-    "ingredients": "Paprika, só, fűszerek",
-    "servingSize": "100g",
-    "additionalInfo": null
+const { object: partialResult, isLoading } = experimental_useObject({
+  api: "/api/extract",
+  schema: extractionResultSchema,
+  onFinish: ({ object }) => {
+    setExtractionResult(object ?? null);
   },
-  "pageCount": 2
-}
-```
-
-#### Response (Error)
-
-```typescript
-interface ExtractErrorResponse {
-  error: string;
-  message?: string;
-}
-```
-
-**Example:**
-```json
-{
-  "error": "Extraction failed",
-  "message": "OPENAI_API_KEY is not configured"
-}
-```
-
-#### Error Codes
-
-- `400`: Invalid request (bad file format, missing parameters)
-- `500`: Server error (PDF processing failure, AI API error)
-
----
-
-## Frontend Components
-
-### Main Page (`app/page.tsx`)
-
-#### Component Structure
-
-```typescript
-export default function Page() {
-  // State management
-  const [file, setFile] = useState<File | null>(null);
-  const [productInfo, setProductInfo] = useState<ProductInfo | null>(null);
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">();
-  const [provider, setProvider] = useState<"openai" | "gemini">("gemini");
-
-  // Handlers
-  const handleFileUpload = async (event) => { ... };
-  const handleSubmit = async () => { ... };
-  const clearFile = () => { ... };
-
-  // Render
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-2">
-      {/* Upload Section */}
-      <Card>...</Card>
-
-      {/* Results Section */}
-      {status === "idle" && <EmptyState />}
-      {status === "loading" && <LoadingSkeleton />}
-      {status === "success" && <ResultsDisplay data={productInfo} />}
-      {status === "error" && <ErrorDisplay message={errorMessage} />}
-    </div>
-  );
-}
-```
-
-#### Multi-Language Support
-
-```typescript
-// Dynamic language selection based on extracted data
-const lang = productInfo?.language || "en";
-
-// Usage in UI
-<h4>{lang === "hu" ? "Allergének" : "Allergens"}</h4>
-
-// Label translations
-const allergenLabels: Record<string, { en: string; hu: string }> = {
-  gluten: { en: "Gluten", hu: "Glutén" },
-  ...
-};
-```
-
----
-
-## Testing Strategy
-
-### Unit Tests (Recommended)
-
-```typescript
-// Test PDF processing
-describe("pdfToImages", () => {
-  it("should convert PDF to images", async () => {
-    const buffer = fs.readFileSync("test.pdf");
-    const result = await pdfToImages(buffer);
-    expect(result.images).toHaveLength(2);
-    expect(result.pageCount).toBe(2);
-  });
-});
-
-// Test schema validation
-describe("productInfoSchema", () => {
-  it("should validate correct data", () => {
-    const data = { productName: "Test", language: "en", ... };
-    expect(() => productInfoSchema.parse(data)).not.toThrow();
-  });
-
-  it("should reject invalid data", () => {
-    const data = { productName: 123, ... };  // Wrong type
-    expect(() => productInfoSchema.parse(data)).toThrow();
-  });
 });
 ```
 
-### Integration Tests
-
-```typescript
-// Test full extraction flow
-describe("/api/extract", () => {
-  it("should extract data from PDF", async () => {
-    const pdfBase64 = fs.readFileSync("test.pdf", "base64");
-    const response = await fetch("/api/extract", {
-      method: "POST",
-      body: JSON.stringify({
-        file: `data:application/pdf;base64,${pdfBase64}`,
-        provider: "gemini"
-      })
-    });
-
-    const result = await response.json();
-    expect(result.success).toBe(true);
-    expect(result.data.productName).toBeDefined();
-  });
-});
-```
-
-### Manual Testing Checklist
-
-- [ ] Upload text-based PDF
-- [ ] Upload scanned/image-based PDF
-- [ ] Upload Hungarian document
-- [ ] Upload English document
-- [ ] Upload multi-page document
-- [ ] Test with OpenAI provider
-- [ ] Test with Gemini provider
-- [ ] Test error handling (invalid file, missing API key)
-- [ ] Test UI responsiveness (mobile, tablet, desktop)
-- [ ] Test language switching
-
----
-
-## Best Practices
-
-### 1. Error Handling
-
-```typescript
-// Always wrap AI calls in try-catch
-try {
-  const result = await extractWithGemini(images);
-  return result;
-} catch (error) {
-  console.error("Extraction error:", error);
-  // Provide user-friendly error message
-  throw new Error("Failed to extract data. Please try again or use a different provider.");
-}
-```
-
-### 2. API Key Management
-
-```typescript
-// Never expose API keys in frontend
-// Always check keys exist before using
-
-const apiKey = process.env.OPENAI_API_KEY;
-if (!apiKey) {
-  throw new Error("OPENAI_API_KEY is not configured");
-}
-```
-
-### 3. Performance Optimization
-
-```typescript
-// Consider implementing caching for frequently analyzed documents
-// Example using a simple in-memory cache:
-
-const cache = new Map<string, ProductInfo>();
-
-export async function extractProductInfo(images: string[], provider: string) {
-  const cacheKey = `${provider}-${hashImages(images)}`;
-
-  if (cache.has(cacheKey)) {
-    return cache.get(cacheKey)!;
-  }
-
-  const result = await (provider === "openai" ? extractWithOpenAI : extractWithGemini)(images);
-  cache.set(cacheKey, result);
-  return result;
-}
-```
-
-### 4. Rate Limiting
-
-```typescript
-// Implement rate limiting for production
-import rateLimit from "express-rate-limit";
-
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,  // 15 minutes
-  max: 10  // Limit each IP to 10 requests per windowMs
-});
-
-// Apply to API route
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: "10mb"  // Limit PDF size
-    }
-  }
-};
-```
-
----
-
-## Deployment Guide
-
-### Environment Variables
-
-```bash
-# Production .env
-OPENAI_API_KEY=sk-proj-...
-GOOGLE_API_KEY=AIza...
-NEXT_PUBLIC_APP_URL=https://yourdomain.com
-NODE_ENV=production
-```
+## Deployment
 
 ### Vercel Deployment
 
+1. **Push to GitHub:**
 ```bash
-# Install Vercel CLI
-npm install -g vercel
-
-# Deploy
-vercel
-
-# Set environment variables
-vercel env add OPENAI_API_KEY
-vercel env add GOOGLE_API_KEY
-
-# Deploy to production
-vercel --prod
+git add .
+git commit -m "Deploy NutriScanner"
+git push origin main
 ```
 
-### Docker Deployment
+2. **Connect to Vercel:**
+   - Go to https://vercel.com
+   - Import repository
+   - Add environment variables
 
+3. **Environment Variables:**
+   ```
+   GOOGLE_GENERATIVE_AI_API_KEY
+   OPENAI_API_KEY
+   ```
+
+4. **Deploy:**
+   - Click "Deploy"
+   - Wait for build to complete
+
+### Other Platforms
+
+**Docker:**
 ```dockerfile
 FROM node:18-alpine
-
 WORKDIR /app
-
 COPY package*.json ./
-RUN npm ci --only=production
-
+RUN npm install --legacy-peer-deps
 COPY . .
 RUN npm run build
-
-EXPOSE 3000
-
 CMD ["npm", "start"]
 ```
 
+**Environment Variables:**
+- Ensure API keys are set in hosting environment
+- Use secrets management for production
+
+## Troubleshooting
+
+### Common Issues
+
+**1. React 19 Peer Dependency Warnings**
+
+Solution: Use `--legacy-peer-deps` flag:
 ```bash
-# Build and run
-docker build -t nutri-scan .
-docker run -p 3000:3000 \
-  -e OPENAI_API_KEY=your_key \
-  -e GOOGLE_API_KEY=your_key \
-  nutri-scan
+npm install --legacy-peer-deps
 ```
 
-### Monitoring & Logging
+**2. API Key Not Found**
+
+Check:
+- `.env.local` file exists
+- Keys are properly formatted
+- Server was restarted after adding keys
+
+**3. PDF Upload Fails**
+
+Verify:
+- File is actually PDF format
+- File size < 5MB
+- MIME type is `application/pdf`
+
+**4. Streaming Doesn't Work**
+
+Ensure:
+- Using Next.js 15+
+- API route returns `toTextStreamResponse()`
+- Client uses `experimental_useObject`
+
+**5. TypeScript Errors**
+
+Run:
+```bash
+npm run build
+```
+Check `tsconfig.json` settings.
+
+### Debug Mode
+
+Enable verbose logging:
 
 ```typescript
-// Add structured logging
-import pino from "pino";
-
-const logger = pino({
-  level: process.env.LOG_LEVEL || "info"
-});
-
-// Usage in API
-logger.info({ provider, pageCount }, "Starting extraction");
-logger.error({ error }, "Extraction failed");
+// In API route
+console.log("Processing file:", files[0].name);
+console.log("Using model:", model);
 ```
 
+### Testing
+
+**Manual Testing:**
+1. Upload sample PDFs
+2. Try both AI models
+3. Test Hungarian and English documents
+4. Test scanned vs regular PDFs
+
+**API Testing:**
+```bash
+curl -X POST http://localhost:3000/api/extract \
+  -H "Content-Type: application/json" \
+  -d '{"files": [...], "model": "gemini"}'
+```
+
+## Performance Optimization
+
+### Recommendations
+
+1. **Image Optimization:**
+   - Next.js Image component for logos
+   - Lazy load components
+
+2. **Code Splitting:**
+   - Dynamic imports for heavy components
+   - Route-based splitting (automatic)
+
+3. **Caching:**
+   - Cache API responses if needed
+   - Use SWR or React Query
+
+4. **Bundle Size:**
+   ```bash
+   npm run build
+   # Check .next/analyze
+   ```
+
+## Security Considerations
+
+1. **API Keys:**
+   - Never commit to version control
+   - Use environment variables
+   - Rotate keys regularly
+
+2. **File Upload:**
+   - Validate file types
+   - Limit file sizes
+   - Sanitize file names
+
+3. **CORS:**
+   - Configure allowed origins
+   - Set proper headers
+
+4. **Rate Limiting:**
+   - Implement rate limiting
+   - Monitor API usage
+
+## Contributing
+
+1. Fork repository
+2. Create feature branch
+3. Make changes
+4. Test thoroughly
+5. Submit pull request
+
+## License
+
+MIT License - See LICENSE file
+
+## Support
+
+For issues or questions:
+- GitHub Issues
+- Developer email
+- Documentation wiki
+
 ---
 
-## Additional Resources
-
-- [Next.js Documentation](https://nextjs.org/docs)
-- [OpenAI API Reference](https://platform.openai.com/docs/api-reference)
-- [Google Gemini API Documentation](https://ai.google.dev/docs)
-- [PDF.js Documentation](https://mozilla.github.io/pdf.js/)
-- [Zod Documentation](https://zod.dev/)
-
----
-
-**Last Updated:** 2025-10-20
 **Version:** 1.0.0
+**Last Updated:** October 2025
+**Maintained by:** NutriScanner Team
