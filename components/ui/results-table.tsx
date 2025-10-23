@@ -59,22 +59,22 @@ export default function ResultsTable({ result }: ResultsTableProps) {
           <CardTitle className="text-lg">Allergens</CardTitle>
         </CardHeader>
         <CardContent>
-          {/* Legend/Key */}
-          <div className="flex items-center gap-6 mb-4 pb-3 border-b border-gray-200">
+          {/* Legend/Key - placed between title and table */}
+          <div className="flex items-center gap-6 mb-4 pb-3 border-b border-gray-200 bg-gray-50 px-3 py-2 rounded-md">
+            <span className="text-xs font-medium text-gray-700">Key:</span>
             <div className="flex items-center gap-2">
-              <div className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-green-100">
-                <Check className="w-3 h-3 text-green-600" />
+              <div className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-green-100">
+                <Check className="w-2.5 h-2.5 text-green-600" />
               </div>
               <span className="text-xs text-gray-600">Present (Jelen van)</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-red-100">
-                <X className="w-3 h-3 text-red-600" />
+              <div className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-red-100">
+                <X className="w-2.5 h-2.5 text-red-600" />
               </div>
               <span className="text-xs text-gray-600">Absent (Nincs jelen)</span>
             </div>
           </div>
-
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
@@ -118,32 +118,41 @@ export default function ResultsTable({ result }: ResultsTableProps) {
           <CardTitle className="text-lg">Nutritional Values</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-900">
-                    Nutrient
-                  </th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-900">
-                    Value
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {Object.entries(result.nutritionalValues).map(([key, value]) => (
-                  <tr key={key} className="border-b border-gray-100">
-                    <td className="py-3 px-4 text-sm text-gray-700">
-                      {nutritionalLabels[key as keyof typeof nutritionalLabels]}
-                    </td>
-                    <td className="py-3 px-4 text-sm font-medium text-gray-900">
-                      {value || "Not found"}
-                    </td>
+          {!result.nutritionalValues || Object.keys(result.nutritionalValues).length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-8 px-4 bg-red-50 border-2 border-red-200 rounded-lg">
+              <X className="w-12 h-12 text-red-500 mb-3" />
+              <p className="text-center text-red-700 font-medium text-base mb-1">
+                No nutritional values were detected from the document (A dokumentumból nem sikerült tápértékeket azonosítani)
+              </p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="border-b border-gray-200">
+                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-900">
+                      Nutrient
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-900">
+                      Value
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {Object.entries(result.nutritionalValues).map(([key, value]) => (
+                    <tr key={key} className="border-b border-gray-100">
+                      <td className="py-3 px-4 text-sm text-gray-700">
+                        {nutritionalLabels[key as keyof typeof nutritionalLabels]}
+                      </td>
+                      <td className="py-3 px-4 text-sm font-medium text-gray-900">
+                        {value || "Not found"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
