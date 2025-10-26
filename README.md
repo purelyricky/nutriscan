@@ -1,6 +1,6 @@
 # NutriScanner - AI-Powered Nutritional Information Extractor
 
-![NutriScanner](public/nutriscanner.svg)
+![NutriScanner](public/nutriscanner.gif)
 
 NutriScanner is a production-ready web application that automatically extracts allergen information and nutritional values from food product PDF documents using advanced AI vision models. It supports both Hungarian and English documents, handles scanned images, and provides real-time streaming extraction with confidence scoring.
 
