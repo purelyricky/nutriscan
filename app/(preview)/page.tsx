@@ -207,7 +207,7 @@ export default function NutriScanner() {
           <ResultsTable result={extractionResult} />
           <div className="mt-6 flex justify-center gap-4">
             <NextLink
-              href="https://github.com/purelyricky/jjkl"
+              href="https://github.com/purelyricky/nutriscan"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-100 bg-white text-gray-700"
@@ -388,12 +388,12 @@ export default function NutriScanner() {
         )}
       </Card>
       <motion.div
-        className="fixed bottom-6 flex gap-3 text-xs"
+        className="fixed bottom-12 flex gap-3 text-xs"
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
       >
         <NextLink
-          href="https://github.com/purelyricky/jjkl"
+          href="https://github.com/purelyricky/nutriscan"
           target="_blank"
           rel="noopener noreferrer"
           className="flex flex-row gap-2 items-center border border-gray-300 px-3 py-2 rounded-md hover:bg-gray-100 bg-white text-gray-700"
