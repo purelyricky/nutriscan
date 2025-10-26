@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { experimental_useObject } from "ai/react";
+import { experimental_useObject as useObject } from "@ai-sdk/react";
 import { extractionResultSchema, ExtractionResult } from "@/lib/schemas";
 import { toast } from "sonner";
 import { FileText, Loader2, Book, RefreshCw, Github } from "lucide-react";
@@ -24,15 +24,11 @@ export default function NutriScanner() {
   const [files, setFiles] = useState<File[]>([]);
   const [extractionResult, setExtractionResult] = useState<ExtractionResult | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [selectedModel, setSelectedModel] = useState<"gemini" | "openai">("openai");
+  const [selectedModel, setSelectedModel] = useState<"openai" | "gemini">("openai");
 
-  const {
-    submit,
-    object: partialResult,
-    isLoading,
-    error: extractionError,
-  } = experimental_useObject({
-    api: "/api/extract",
+  // Create separate hooks for each model since useObject's api param is static
+  const openaiHook = useObject({
+    api: "/api/extract/openai",
     schema: extractionResultSchema,
     initialValue: undefined,
     onError: (error) => {
@@ -59,6 +55,45 @@ export default function NutriScanner() {
       }
     },
   });
+
+  const geminiHook = useObject({
+    api: "/api/extract/gemini",
+    schema: extractionResultSchema,
+    initialValue: undefined,
+    onError: (error) => {
+      console.error("Extraction error:", error);
+      toast.error("Failed to extract information. The PDF may not contain nutritional data or may be unreadable.");
+      setFiles([]);
+    },
+    onFinish: ({ object, error }) => {
+      console.log("Extraction finished:", { object, error });
+
+      if (error) {
+        console.error("Extraction error in onFinish:", error);
+        toast.error("Failed to process the PDF. Please try a different file or AI model.");
+        setFiles([]);
+        return;
+      }
+
+      if (object) {
+        setExtractionResult(object);
+        toast.success("Extraction completed successfully!");
+      } else {
+        toast.error("No data could be extracted from this PDF. Please ensure it contains nutritional information.");
+        setFiles([]);
+      }
+    },
+  });
+
+  // Select the appropriate hook based on the selected model
+  const currentHook = selectedModel === "openai" ? openaiHook : geminiHook;
+
+  const { submit, object: partialResult, isLoading, error: extractionError } = currentHook as {
+    submit: (params: { files: { name: string; type: string; data: string }[] }) => void;
+    object: Partial<ExtractionResult> | undefined;
+    isLoading: boolean;
+    error: Error | undefined;
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -93,7 +128,7 @@ export default function NutriScanner() {
 
   const handleSubmitWithFiles = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Starting extraction...");
+    console.log("Starting extraction with model:", selectedModel);
     const encodedFiles = await Promise.all(
       files.map(async (file) => ({
         name: file.name,
@@ -101,8 +136,10 @@ export default function NutriScanner() {
         data: await encodeFileAsBase64(file),
       })),
     );
-    console.log("Files encoded, submitting to API...");
-    submit({ files: encodedFiles, model: selectedModel });
+    console.log("Files encoded, submitting to API for", selectedModel);
+
+    // Submit to the appropriate endpoint based on selected model
+    submit({ files: encodedFiles });
   };
 
   const resetScanner = () => {
@@ -248,24 +285,45 @@ export default function NutriScanner() {
               <label className="text-sm font-medium text-gray-700">
                 AI Model
               </label>
-              <div className="flex gap-3">
-                <Button
-                  type="button"
-                  variant={selectedModel === "gemini" ? "default" : "outline"}
-                  className={`flex-1 ${selectedModel === "gemini" ? "bg-blue-600 hover:bg-blue-700" : ""}`}
-                  onClick={() => setSelectedModel("gemini")}
-                >
-                  Google Gemini
-                </Button>
+              <div className="flex gap-2">
+                {/* OpenAI GPT-4o */}
                 <Button
                   type="button"
                   variant={selectedModel === "openai" ? "default" : "outline"}
-                  className={`flex-1 ${selectedModel === "openai" ? "bg-blue-600 hover:bg-blue-700" : ""}`}
+                  className={`flex-1 flex items-center justify-center gap-1.5 h-9 px-2 ${selectedModel === "openai" ? "bg-blue-600 hover:bg-blue-700 text-white" : "hover:bg-gray-50"}`}
                   onClick={() => setSelectedModel("openai")}
                 >
-                  OpenAI GPT-4
+                  <Image
+                    src="/openai.svg"
+                    alt="OpenAI"
+                    width={14}
+                    height={14}
+                    className={selectedModel === "openai" ? "brightness-0 invert" : ""}
+                  />
+                  <span className="text-xs font-medium">OpenAI</span>
+                </Button>
+
+                {/* Google Gemini */}
+                <Button
+                  type="button"
+                  variant={selectedModel === "gemini" ? "default" : "outline"}
+                  className={`flex-1 flex items-center justify-center gap-1.5 h-9 px-2 ${selectedModel === "gemini" ? "bg-blue-600 hover:bg-blue-700 text-white" : "hover:bg-gray-50"}`}
+                  onClick={() => setSelectedModel("gemini")}
+                >
+                  <Image
+                    src="/google.svg"
+                    alt="Google Gemini"
+                    width={14}
+                    height={14}
+                    className={selectedModel === "gemini" ? "brightness-0 invert" : ""}
+                  />
+                  <span className="text-xs font-medium">Gemini</span>
                 </Button>
               </div>
+              <p className="text-[10px] text-gray-500 text-center">
+                {selectedModel === "openai" && "Recommended • Most accurate"}
+                {selectedModel === "gemini" && "Production-ready • Fast"}
+              </p>
             </div>
 
             {/* File Upload */}
@@ -322,9 +380,7 @@ export default function NutriScanner() {
               <div className="flex items-center justify-center space-x-2 text-sm">
                 <div className="h-2 w-2 rounded-full bg-blue-500 animate-pulse" />
                 <span className="text-gray-600">
-                  {partialResult
-                    ? "Processing data..."
-                    : "Analyzing PDF..."}
+                  {partialResult ? "Processing data..." : "Analyzing PDF..."}
                 </span>
               </div>
             </div>

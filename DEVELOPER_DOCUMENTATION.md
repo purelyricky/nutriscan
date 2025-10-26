@@ -18,12 +18,12 @@
 NutriScanner follows a modern Next.js 15 architecture with App Router:
 
 ```
-┌─────────────┐         ┌──────────────┐         ┌─────────────┐
-│   Browser   │ ──────> │   Next.js    │ ──────> │  AI Model   │
-│  (Client)   │ <────── │  (Server)    │ <────── │ (Gemini/GPT)│
-└─────────────┘         └──────────────┘         └─────────────┘
-      │                        │
-      │                        │
+┌─────────────┐         ┌──────────────┐         ┌─────────────────────────┐
+│   Browser   │ ──────> │   Next.js    │ ──────> │  AI Model Provider      │
+│  (Client)   │ <────── │  (Server)    │ <────── │  • OpenAI GPT-4o       │
+└─────────────┘         └──────────────┘         │  • Google Gemini        │
+      │                        │                  │  • Qwen (Self-hosted)   │
+      │                        │                  └─────────────────────────┘
       ▼                        ▼
   React UI              API Routes
   Components            /api/extract
@@ -32,12 +32,13 @@ NutriScanner follows a modern Next.js 15 architecture with App Router:
 ### Data Flow
 
 1. User uploads PDF via React component
-2. PDF is encoded to base64 on client
-3. Client sends request to `/api/extract` with PDF data and model selection
-4. Server forwards PDF to selected AI model (Gemini or OpenAI)
-5. AI model processes PDF using vision/OCR capabilities
-6. Structured data is streamed back to client
-7. Client displays results in tables
+2. User selects AI model: OpenAI GPT-4o, Google Gemini, or Qwen (self-hosted)
+3. PDF is encoded to base64 on client
+4. Client sends request to `/api/extract` with PDF data and model selection
+5. Server forwards PDF to selected AI model (OpenAI, Gemini, or Qwen on Modal)
+6. AI model processes PDF using vision/OCR capabilities
+7. Structured data is streamed back to client in real-time
+8. Client displays results in formatted tables
 
 ## Project Structure
 
@@ -135,13 +136,21 @@ Note: `--legacy-peer-deps` may be needed due to React 19 peer dependency conflic
 Create `.env.local` file:
 
 ```env
-GOOGLE_GENERATIVE_AI_API_KEY=your_google_api_key
+# Required for OpenAI GPT-4o
 OPENAI_API_KEY=your_openai_api_key
+
+# Required for Google Gemini
+GOOGLE_GENERATIVE_AI_API_KEY=your_google_api_key
+
+# Optional: Self-hosted Qwen model (experimental)
+QWEN_BASE_URL=https://yourname--nutriscan-qwen-inference-qwenvlinference-web-app.modal.run
+QWEN_API_KEY=
 ```
 
 **Getting API Keys:**
-- Google Gemini: https://ai.google.dev/
+- Google Gemini: https://aistudio.google.com/app/apikey
 - OpenAI: https://platform.openai.com/api-keys
+- Qwen (Modal): Deploy using `modal deploy back_end/deploy_qwen.py`
 
 ### Step 4: Run Development Server
 
@@ -173,7 +182,7 @@ Extracts allergen and nutritional information from PDF.
     type: string;
     data: string; // base64 encoded PDF
   }>;
-  model: "gemini" | "openai";
+  model: "openai" | "gemini" | "qwen";
 }
 ```
 
@@ -241,9 +250,10 @@ export async function POST(req: Request) {
 
 **Key Features:**
 - File upload with drag & drop
-- Model selection (Gemini/OpenAI)
-- Progress tracking
-- Results display
+- Model selection (OpenAI GPT-4o, Google Gemini, Qwen 2.5-VL)
+- Visual model selector with icons
+- Progress tracking with real-time updates
+- Results display with bilingual labels
 - Error handling
 
 **State Management:**
@@ -251,7 +261,7 @@ export async function POST(req: Request) {
 ```typescript
 const [files, setFiles] = useState<File[]>([]);
 const [extractionResult, setExtractionResult] = useState<ExtractionResult | null>(null);
-const [selectedModel, setSelectedModel] = useState<"gemini" | "openai">("gemini");
+const [selectedModel, setSelectedModel] = useState<"openai" | "gemini" | "qwen">("openai");
 ```
 
 **Hooks Used:**
@@ -338,23 +348,9 @@ export const extractionResultSchema = z.object({
 
 ## AI Model Integration
 
-### Gemini Integration
+NutriScanner supports three AI model providers, each with unique characteristics:
 
-```typescript
-import { google } from "@ai-sdk/google";
-
-const model = google("gemini-1.5-pro-latest");
-```
-
-**Capabilities:**
-- Native PDF processing
-- OCR for scanned documents
-- Multi-language support
-- Vision capabilities for images
-
-**API Key:** `GOOGLE_GENERATIVE_AI_API_KEY`
-
-### OpenAI Integration
+### 1. OpenAI GPT-4o (Recommended)
 
 ```typescript
 import { openai } from "@ai-sdk/openai";
@@ -363,12 +359,92 @@ const model = openai("gpt-4o");
 ```
 
 **Capabilities:**
-- Advanced PDF understanding
-- OCR via vision API
-- Excellent structured output
-- Multi-language processing
+- ✅ Advanced PDF understanding with native multimodal support
+- ✅ Superior OCR for scanned documents
+- ✅ Excellent structured output reliability
+- ✅ Multi-language processing (Hungarian & English)
+- ✅ Fastest inference time (2-4 seconds)
 
-**API Key:** `OPENAI_API_KEY`
+**Configuration:**
+- **API Key:** `OPENAI_API_KEY`
+- **Get Key:** https://platform.openai.com/api-keys
+- **Cost:** ~$0.01-0.03 per extraction (pay-per-use)
+- **Status:** Production-ready ✅
+
+### 2. Google Gemini 1.5 Pro
+
+```typescript
+import { google } from "@ai-sdk/google";
+
+const model = google("gemini-1.5-pro-latest");
+```
+
+**Capabilities:**
+- ✅ Native PDF processing
+- ✅ OCR for scanned documents
+- ✅ Multi-language support
+- ✅ Large context window (2M tokens)
+- ⚠️ Slightly slower than GPT-4o (4-6 seconds)
+
+**Configuration:**
+- **API Key:** `GOOGLE_GENERATIVE_AI_API_KEY`
+- **Get Key:** https://aistudio.google.com/app/apikey
+- **Cost:** Free tier available, then ~$0.007 per extraction
+- **Status:** Production-ready ✅
+
+### 3. Qwen 2.5-VL-3B (Self-hosted - Experimental)
+
+```typescript
+import { createOpenAI } from "@ai-sdk/openai";
+
+const qwenProvider = createOpenAI({
+  apiKey: process.env.QWEN_API_KEY || "not-needed",
+  baseURL: process.env.QWEN_BASE_URL,
+});
+
+const model = qwenProvider("qwen2.5-vl-3b-instruct");
+```
+
+**Capabilities:**
+- ✅ OpenAI-compatible API
+- ✅ Self-hosted on Modal.com (full control)
+- ✅ Automatic PDF to image conversion (300 DPI)
+- ✅ Vision-language understanding
+- ⚠️ Smaller model (3B parameters vs 175B+ for GPT-4)
+- ⚠️ Cold start latency (15-20 seconds)
+- ⚠️ Warm inference (3-8 seconds)
+
+**Configuration:**
+- **Environment Variables:**
+  - `QWEN_BASE_URL`: Your Modal deployment URL
+  - `QWEN_API_KEY`: Optional (usually not needed)
+- **Deployment:**
+  ```bash
+  # Install Modal CLI
+  pip install modal
+
+  # Authenticate
+  modal token new
+
+  # Deploy
+  modal deploy back_end/deploy_qwen.py
+  ```
+- **Cost:** ~$1.10/hr when active (auto-scales to zero when idle)
+- **GPU:** NVIDIA A10G (24GB VRAM)
+- **Status:** Experimental 🧪
+
+**Performance Comparison:**
+
+| Feature | OpenAI GPT-4o | Google Gemini | Qwen 2.5-VL (Self-hosted) |
+|---------|---------------|---------------|---------------------------|
+| Accuracy | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ |
+| Speed (warm) | 2-4s | 4-6s | 3-8s |
+| Cold Start | N/A | N/A | 15-20s |
+| Cost/extraction | $0.01-0.03 | $0.007 | Variable* |
+| Self-hosted | ❌ | ❌ | ✅ |
+| Production Ready | ✅ | ✅ | 🧪 Experimental |
+
+*Qwen cost depends on usage patterns. Best for high-volume or privacy-sensitive workloads.
 
 ### System Prompt
 
@@ -420,8 +496,13 @@ git push origin main
 
 3. **Environment Variables:**
    ```
-   GOOGLE_GENERATIVE_AI_API_KEY
-   OPENAI_API_KEY
+   # Required
+   OPENAI_API_KEY=your_openai_key
+   GOOGLE_GENERATIVE_AI_API_KEY=your_gemini_key
+
+   # Optional (for self-hosted Qwen)
+   QWEN_BASE_URL=your_modal_url
+   QWEN_API_KEY=
    ```
 
 4. **Deploy:**

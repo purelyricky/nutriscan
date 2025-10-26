@@ -29,8 +29,8 @@ export const extractionResultSchema = z.object({
   allergens: allergenSchema.describe("Allergen information extracted from the document"),
   nutritionalValues: nutritionalValueSchema.describe("Nutritional values extracted from the document"),
   detectedLanguage: z.enum(["hungarian", "english", "both", "unknown"]).describe("The language detected in the document"),
-  productName: z.string().optional().describe("Product name if found in the document"),
-  confidence: z.enum(["high", "medium", "low"]).optional().describe("Confidence level of the extraction"),
+  productName: z.string().optional().describe("Product name extracted from the document content or filename"),
+  confidence: z.enum(["high", "medium", "low"]).describe("REQUIRED: Confidence level of the extraction based on document quality and clarity"),
 });
 
 export type Allergen = z.infer<typeof allergenSchema>;
