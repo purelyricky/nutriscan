@@ -387,28 +387,31 @@ export default function NutriScanner() {
           </CardFooter>
         )}
       </Card>
-      <motion.div
-        className="fixed bottom-12 flex gap-3 text-xs"
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-      >
-        <NextLink
-          href="https://github.com/purelyricky/nutriscan"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex flex-row gap-2 items-center border border-gray-300 px-3 py-2 rounded-md hover:bg-gray-100 bg-white text-gray-700"
+      {!isLoading && (
+        <motion.div
+          className="fixed bottom-12 flex gap-3 text-xs"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 20, opacity: 0 }}
         >
-          <Github className="h-4 w-4" />
-          Source Code
-        </NextLink>
-        <NextLink
-          href="/docs"
-          className="flex flex-row gap-2 items-center border border-gray-300 px-3 py-2 rounded-md hover:bg-gray-100 bg-white text-gray-700"
-        >
-          <Book className="h-4 w-4" />
-          Documentation
-        </NextLink>
-      </motion.div>
+          <NextLink
+            href="https://github.com/purelyricky/nutriscan"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex flex-row gap-2 items-center border border-gray-300 px-3 py-2 rounded-md hover:bg-gray-100 bg-white text-gray-700"
+          >
+            <Github className="h-4 w-4" />
+            Source Code
+          </NextLink>
+          <NextLink
+            href="/docs"
+            className="flex flex-row gap-2 items-center border border-gray-300 px-3 py-2 rounded-md hover:bg-gray-100 bg-white text-gray-700"
+          >
+            <Book className="h-4 w-4" />
+            Documentation
+          </NextLink>
+        </motion.div>
+      )}
     </div>
   );
 }

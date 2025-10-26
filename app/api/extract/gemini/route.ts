@@ -34,7 +34,7 @@ export async function POST(req: Request) {
     console.log("Gemini API: Buffer created, size:", fileBuffer.length);
 
     const result = streamObject({
-      model: google("gemini-2.0-flash-exp"),
+      model: google("gemini-2.5-flash"),
       messages: [
         {
           role: "system",
