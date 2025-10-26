@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Copy, Check, ExternalLink, ChevronRight } from "lucide-react";
+import { Copy, Check, ExternalLink, ChevronRight, Code2, Zap, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import NextLink from "next/link";
+import Image from "next/image";
 
 export default function Documentation() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -70,8 +71,14 @@ export default function Documentation() {
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <NextLink href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <img src="/nutriscanner.svg" alt="NutriScanner" className="h-8 w-8" />
-            <h1 className="text-xl font-bold text-gray-900">NutriScanner Documentation</h1>
+            <Image
+              src="/nutriscanner.svg"
+              alt="NutriScanner"
+              width={32}
+              height={32}
+              className="w-8 h-8"
+            />
+            <h1 className="text-xl font-bold text-gray-900">NutriScanner Developer Documentation</h1>
           </NextLink>
           <NextLink href="/">
             <Button variant="outline">Back to App</Button>
@@ -92,11 +99,13 @@ export default function Documentation() {
                   <nav className="space-y-2">
                     {[
                       { id: "overview", label: "Overview" },
-                      { id: "frontend-setup", label: "Frontend Setup" },
-                      { id: "backend-deployment", label: "Backend Deployment" },
-                      { id: "environment-variables", label: "Environment Variables" },
-                      { id: "testing", label: "Testing" },
                       { id: "architecture", label: "Architecture" },
+                      { id: "setup", label: "Developer Setup" },
+                      { id: "api-routes", label: "API Routes" },
+                      { id: "schemas", label: "Data Schemas" },
+                      { id: "frontend", label: "Frontend Components" },
+                      { id: "ai-integration", label: "AI Integration" },
+                      { id: "deployment", label: "Deployment" },
                       { id: "troubleshooting", label: "Troubleshooting" },
                     ].map((item) => (
                       <a
@@ -119,69 +128,287 @@ export default function Documentation() {
             {/* Overview */}
             <Section id="overview" title="🚀 Overview">
               <p className="text-gray-700 leading-relaxed">
-                NutriScanner is an AI-powered application that extracts nutritional information and allergen data
-                from food product PDF labels. It uses vision-language models to analyze documents in multiple
-                languages (Hungarian, English, or both).
+                NutriScanner is a production-ready, AI-powered web application that extracts allergen information and
+                nutritional values from food product PDF documents. Built with Next.js 15 and powered by advanced vision
+                language models, it provides real-time streaming extraction with bilingual support (Hungarian/English).
               </p>
-              <Card className="bg-blue-50 border-blue-200">
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                <Card className="bg-blue-50 border-blue-200">
+                  <CardContent className="pt-6">
+                    <div className="flex items-center gap-3 mb-3">
+                      <Code2 className="h-5 w-5 text-blue-600" />
+                      <h3 className="font-semibold text-blue-900">Modern Stack</h3>
+                    </div>
+                    <p className="text-sm text-blue-800">
+                      Next.js 15, React 19, TypeScript, Tailwind CSS, and Vercel AI SDK
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-green-50 border-green-200">
+                  <CardContent className="pt-6">
+                    <div className="flex items-center gap-3 mb-3">
+                      <Zap className="h-5 w-5 text-green-600" />
+                      <h3 className="font-semibold text-green-900">Dual AI Models</h3>
+                    </div>
+                    <p className="text-sm text-green-800">
+                      OpenAI GPT-4o for accuracy, Google Gemini 2.5-Flash for speed
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-purple-50 border-purple-200">
+                  <CardContent className="pt-6">
+                    <div className="flex items-center gap-3 mb-3">
+                      <Shield className="h-5 w-5 text-purple-600" />
+                      <h3 className="font-semibold text-purple-900">Type-Safe</h3>
+                    </div>
+                    <p className="text-sm text-purple-800">
+                      Zod schema validation with full TypeScript type inference
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 mt-6">
                 <CardContent className="pt-6">
                   <h3 className="font-semibold text-blue-900 mb-3">Key Features</h3>
                   <ul className="space-y-2 text-sm text-blue-800">
                     <li className="flex items-start gap-2">
                       <span className="text-blue-600 mt-1">✓</span>
-                      <span>Three AI model options: OpenAI GPT-4o, Google Gemini 1.5 Pro, and Qwen 2.5-VL (self-hosted)</span>
+                      <span>Dual AI model architecture: OpenAI GPT-4o and Google Gemini 2.5-Flash</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-blue-600 mt-1">✓</span>
-                      <span>Multi-language support (Hungarian & English)</span>
+                      <span>Real-time streaming with live progress tracking (10-100%)</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-blue-600 mt-1">✓</span>
-                      <span>Real-time streaming extraction with progress tracking</span>
+                      <span>Bilingual support (Hungarian & English) with auto-detection</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-blue-600 mt-1">✓</span>
-                      <span>Cost-effective self-hosted option via Modal (experimental)</span>
+                      <span>10 EU-regulated allergens with smart detection rules</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-blue-600 mt-1">✓</span>
+                      <span>Confidence scoring system (High/Medium/Low)</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-blue-600 mt-1">✓</span>
+                      <span>Vision capabilities for both digital PDFs and scanned images</span>
                     </li>
                   </ul>
                 </CardContent>
               </Card>
             </Section>
 
-            {/* Frontend Setup */}
-            <Section id="frontend-setup" title="💻 Frontend Setup">
-              <p className="text-gray-700">
-                Follow these steps to set up and run the NutriScanner frontend on your local machine.
+            {/* Architecture */}
+            <Section id="architecture" title="🏗️ Architecture">
+              <p className="text-gray-700 mb-4">
+                NutriScanner follows a modern serverless architecture with clear separation of concerns.
               </p>
 
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3">1. Clone the Repository</h3>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">System Architecture</h3>
+                  <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                    <pre className="text-xs text-gray-700 overflow-x-auto">
+{`┌─────────────────────────────────────────────────────────────┐
+│                        BROWSER (Client)                     │
+├─────────────────────────────────────────────────────────────┤
+│  • PDF Upload (drag & drop / file picker)                  │
+│  • Base64 Encoding (FileReader API)                        │
+│  • Model Selection (OpenAI / Gemini)                       │
+│  • Real-time Progress Display                              │
+│  • Results Rendering                                       │
+└────────────────────┬────────────────────────────────────────┘
+                     │ HTTP POST (base64 PDF)
+                     ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    NEXT.JS API ROUTES                       │
+├─────────────────────────────────────────────────────────────┤
+│  /api/extract/openai    │    /api/extract/gemini           │
+│  • Receive base64 PDF   │    • Receive base64 PDF          │
+│  • Convert to Buffer    │    • Convert to Buffer           │
+│  • Validate input       │    • Validate input              │
+└────────────┬────────────┴────────────┬─────────────────────┘
+             │                         │
+             ▼                         ▼
+┌─────────────────────┐     ┌─────────────────────┐
+│   OpenAI GPT-4o     │     │  Google Gemini      │
+│   (Vision Model)    │     │  2.5-Flash          │
+│   • OCR Processing  │     │  (Vision Model)     │
+│   • Smart Extract   │     │  • Fast Processing  │
+│   • Most Accurate   │     │  • Cost-Effective   │
+└─────────┬───────────┘     └──────────┬──────────┘
+          │                            │
+          └────────────┬───────────────┘
+                       │ Structured JSON
+                       ▼
+┌─────────────────────────────────────────────────────────────┐
+│                   SCHEMA VALIDATION (Zod)                   │
+├─────────────────────────────────────────────────────────────┤
+│  • Validate allergens (10 required boolean fields)         │
+│  • Validate nutritional values (optional with units)       │
+│  • Validate confidence (high/medium/low)                   │
+│  • Validate language detection                             │
+└────────────────────┬────────────────────────────────────────┘
+                     │ Streaming Response
+                     ▼
+┌─────────────────────────────────────────────────────────────┐
+│                      CLIENT DISPLAY                         │
+├─────────────────────────────────────────────────────────────┤
+│  • Product Information Card                                │
+│  • Allergens Table (with visual indicators)                │
+│  • Nutritional Values Table (bilingual labels)             │
+│  • Confidence Badge & Language Detection                   │
+└─────────────────────────────────────────────────────────────┘`}
+                    </pre>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Data Flow</h3>
+                  <ol className="space-y-3 text-sm text-gray-700">
+                    <li className="flex items-start gap-3">
+                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white text-xs font-semibold flex items-center justify-center">1</span>
+                      <span>User uploads PDF (max 5MB) and selects AI model (OpenAI or Gemini)</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white text-xs font-semibold flex items-center justify-center">2</span>
+                      <span>Browser encodes PDF to base64 data URL using FileReader API</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white text-xs font-semibold flex items-center justify-center">3</span>
+                      <span>POST request sent to <code className="bg-gray-100 px-1 rounded">/api/extract/{`{model}`}</code> with encoded file</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white text-xs font-semibold flex items-center justify-center">4</span>
+                      <span>API route converts base64 to Buffer and prepares vision model request</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white text-xs font-semibold flex items-center justify-center">5</span>
+                      <span>Vision model processes PDF, extracts allergens, nutritional values, and metadata</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white text-xs font-semibold flex items-center justify-center">6</span>
+                      <span>Results validated against Zod schema for type safety</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white text-xs font-semibold flex items-center justify-center">7</span>
+                      <span>Streaming response sent to client with real-time progress updates</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white text-xs font-semibold flex items-center justify-center">8</span>
+                      <span>Client displays results in bilingual tables with visual indicators</span>
+                    </li>
+                  </ol>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Technology Stack</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-sm">Frontend</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <ul className="space-y-2 text-sm text-gray-700">
+                          <li>• Next.js 15.1.0 (App Router)</li>
+                          <li>• React 19.0.0</li>
+                          <li>• TypeScript 5.7.2</li>
+                          <li>• Tailwind CSS 3.4.16</li>
+                          <li>• shadcn/ui (Radix UI)</li>
+                          <li>• Framer Motion 11.14.1</li>
+                          <li>• Lucide React 0.468.0</li>
+                          <li>• Sonner 1.7.1 (Toasts)</li>
+                        </ul>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-sm">Backend & AI</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <ul className="space-y-2 text-sm text-gray-700">
+                          <li>• Vercel AI SDK 5.0.0</li>
+                          <li>• @ai-sdk/openai 2.0.53</li>
+                          <li>• @ai-sdk/google 2.0.23</li>
+                          <li>• @ai-sdk/react 2.0.79</li>
+                          <li>• Zod 3.24.1 (Validation)</li>
+                          <li>• Next.js API Routes</li>
+                          <li>• Serverless Functions</li>
+                        </ul>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+              </div>
+            </Section>
+
+            {/* Developer Setup */}
+            <Section id="setup" title="💻 Developer Setup">
+              <p className="text-gray-700 mb-4">
+                Follow these steps to set up NutriScanner for local development.
+              </p>
+
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Prerequisites</h3>
+                  <ul className="space-y-2 text-sm text-gray-700">
+                    <li className="flex items-center gap-2">
+                      <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                      <strong>Node.js 18+</strong> - Required for Next.js 15
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                      <strong>npm 10+</strong> - Or yarn/pnpm equivalent
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                      <strong>OpenAI API Key</strong> - Get from{" "}
+                      <ExternalLinkButton href="https://platform.openai.com/api-keys">
+                        platform.openai.com
+                      </ExternalLinkButton>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                      <strong>Google Gemini API Key</strong> - Get from{" "}
+                      <ExternalLinkButton href="https://aistudio.google.com/app/apikey">
+                        aistudio.google.com
+                      </ExternalLinkButton>
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">1. Clone Repository</h3>
                   <CodeBlock
                     id="clone"
                     language="bash"
-                    code="git clone https://github.com/yourusername/nutri-scan.git\ncd nutri-scan"
+                    code="git clone https://github.com/purelyricky/nutriscan.git\ncd nutriscan"
                   />
                 </div>
 
                 <div>
                   <h3 className="text-lg font-semibold text-gray-800 mb-3">2. Install Dependencies</h3>
-                  <p className="text-gray-700 mb-3">
-                    NutriScanner uses Next.js 15 with React 19. Install all required packages:
-                  </p>
                   <CodeBlock
                     id="install"
                     language="bash"
                     code="npm install"
                   />
                   <div className="mt-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                    <p className="text-sm text-gray-700 font-medium mb-2">Key Dependencies:</p>
+                    <p className="text-sm text-gray-700 font-medium mb-2">Key Dependencies Installed:</p>
                     <ul className="text-sm text-gray-600 space-y-1">
-                      <li>• Next.js 15.1.0 - React framework</li>
-                      <li>• Vercel AI SDK 4.0.16 - AI model integration</li>
-                      <li>• Tailwind CSS 3.4.16 - Styling</li>
-                      <li>• Zod 3.24.1 - Schema validation</li>
-                      <li>• Framer Motion 11.14.1 - Animations</li>
+                      <li>• next@15.1.0 - React framework with App Router</li>
+                      <li>• ai@5.0.0 - Vercel AI SDK for streaming</li>
+                      <li>• @ai-sdk/openai@2.0.53 - OpenAI integration</li>
+                      <li>• @ai-sdk/google@2.0.23 - Google Gemini integration</li>
+                      <li>• zod@3.24.1 - Schema validation</li>
+                      <li>• tailwindcss@3.4.16 - Styling framework</li>
                     </ul>
                   </div>
                 </div>
@@ -189,38 +416,17 @@ export default function Documentation() {
                 <div>
                   <h3 className="text-lg font-semibold text-gray-800 mb-3">3. Configure Environment Variables</h3>
                   <p className="text-gray-700 mb-3">
-                    Create a <code className="bg-gray-100 px-2 py-1 rounded text-sm">.env</code> file in the root directory:
+                    Create a <code className="bg-gray-100 px-2 py-1 rounded text-sm">.env.local</code> file in the root directory:
                   </p>
                   <CodeBlock
                     id="env"
                     language="bash"
                     code={`# OpenAI Configuration (Required)
-OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_API_KEY=sk-proj-your_openai_key_here
 
 # Google Gemini Configuration (Required)
-GOOGLE_GENERATIVE_AI_API_KEY=your_google_api_key_here
-
-# Qwen Modal Deployment (Optional - Self-hosted experimental)
-QWEN_BASE_URL=your_modal_endpoint_url_here
-QWEN_API_KEY=`}
+GOOGLE_GENERATIVE_AI_API_KEY=AIzaSyD_your_google_key_here`}
                   />
-                  <div className="mt-3 space-y-2">
-                    <p className="text-sm text-gray-700">
-                      <strong>Get your OpenAI API key:</strong>{" "}
-                      <ExternalLinkButton href="https://platform.openai.com/api-keys">
-                        platform.openai.com/api-keys
-                      </ExternalLinkButton>
-                    </p>
-                    <p className="text-sm text-gray-700">
-                      <strong>Get your Google Gemini API key:</strong>{" "}
-                      <ExternalLinkButton href="https://aistudio.google.com/app/apikey">
-                        aistudio.google.com/app/apikey
-                      </ExternalLinkButton>
-                    </p>
-                    <p className="text-sm text-gray-700">
-                      <strong>For Qwen setup:</strong> See the Backend Deployment section below (optional, experimental)
-                    </p>
-                  </div>
                 </div>
 
                 <div>
@@ -235,7 +441,7 @@ QWEN_API_KEY=`}
                     <a href="http://localhost:3000" className="text-blue-600 hover:underline font-medium">
                       http://localhost:3000
                     </a>{" "}
-                    in your browser to see the application.
+                    to see the application running.
                   </p>
                 </div>
 
@@ -250,431 +456,528 @@ QWEN_API_KEY=`}
               </div>
             </Section>
 
-            {/* Backend Deployment */}
-            <Section id="backend-deployment" title="🚀 Backend Deployment (Qwen on Modal)">
+            {/* API Routes */}
+            <Section id="api-routes" title="🛣️ API Routes">
               <p className="text-gray-700 mb-4">
-                Deploy the Qwen2.5-VL-3B-Instruct vision-language model on{" "}
-                <ExternalLinkButton href="https://modal.com">Modal.com</ExternalLinkButton> for cost-effective,
-                self-hosted AI inference.
+                NutriScanner implements two parallel API routes for different AI models.
               </p>
 
-              <Card className="bg-green-50 border-green-200">
-                <CardContent className="pt-6">
-                  <h3 className="font-semibold text-green-900 mb-3">Why Modal + A10G GPU?</h3>
-                  <ul className="space-y-2 text-sm text-green-800">
+              <div className="space-y-6">
+                <Card className="border-blue-200">
+                  <CardHeader className="bg-blue-50">
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <Image src="/openai.svg" alt="OpenAI" width={20} height={20} />
+                      POST /api/extract/openai
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-6">
+                    <p className="text-sm text-gray-700 mb-4">
+                      <strong>Model:</strong> GPT-4o (OpenAI's vision-language model)
+                      <br />
+                      <strong>Use Case:</strong> Highest accuracy, recommended for critical data
+                      <br />
+                      <strong>Max Duration:</strong> 60 seconds
+                    </p>
+
+                    <h4 className="font-semibold text-gray-800 mb-2">Request Example:</h4>
+                    <CodeBlock
+                      id="openai-request"
+                      language="typescript"
+                      code={`// Client-side request
+const response = await fetch('/api/extract/openai', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    files: [{
+      name: "product-label.pdf",
+      type: "application/pdf",
+      data: "data:application/pdf;base64,JVBERi0xLjQK..."
+    }]
+  })
+});`}
+                    />
+
+                    <h4 className="font-semibold text-gray-800 mb-2 mt-4">Implementation:</h4>
+                    <CodeBlock
+                      id="openai-impl"
+                      language="typescript"
+                      code={`// app/api/extract/openai/route.ts
+import { openai } from "@ai-sdk/openai";
+import { streamObject } from "ai";
+import { extractionResultSchema } from "@/lib/schemas";
+import { EXTRACTION_SYSTEM_PROMPT } from "@/lib/system-prompt";
+
+export const maxDuration = 60;
+
+export async function POST(req: Request) {
+  const { files } = await req.json();
+  const base64Data = files[0].data.split(',')[1];
+  const fileBuffer = Buffer.from(base64Data, 'base64');
+
+  const result = streamObject({
+    model: openai("gpt-4o"),
+    messages: [
+      { role: "system", content: EXTRACTION_SYSTEM_PROMPT },
+      {
+        role: "user",
+        content: [
+          { type: "text", text: "Extract allergen and nutritional info..." },
+          { type: "file", data: fileBuffer, mimeType: "application/pdf" }
+        ]
+      }
+    ],
+    schema: extractionResultSchema,
+  });
+
+  return result.toTextStreamResponse();
+}`}
+                    />
+                  </CardContent>
+                </Card>
+
+                <Card className="border-green-200">
+                  <CardHeader className="bg-green-50">
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <Image src="/google.svg" alt="Google" width={20} height={20} />
+                      POST /api/extract/gemini
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-6">
+                    <p className="text-sm text-gray-700 mb-4">
+                      <strong>Model:</strong> Gemini 2.5-Flash (Google's vision model)
+                      <br />
+                      <strong>Use Case:</strong> Fast extraction, production-ready, cost-effective
+                      <br />
+                      <strong>Max Duration:</strong> 60 seconds
+                    </p>
+
+                    <h4 className="font-semibold text-gray-800 mb-2">Implementation:</h4>
+                    <CodeBlock
+                      id="gemini-impl"
+                      language="typescript"
+                      code={`// app/api/extract/gemini/route.ts
+import { google } from "@ai-sdk/google";
+import { streamObject } from "ai";
+import { extractionResultSchema } from "@/lib/schemas";
+import { EXTRACTION_SYSTEM_PROMPT } from "@/lib/system-prompt";
+
+export const maxDuration = 60;
+
+export async function POST(req: Request) {
+  const { files } = await req.json();
+  const base64Data = files[0].data.split(',')[1];
+  const fileBuffer = Buffer.from(base64Data, 'base64');
+
+  const result = streamObject({
+    model: google("gemini-2.5-flash"),  // Only difference!
+    messages: [
+      { role: "system", content: EXTRACTION_SYSTEM_PROMPT },
+      {
+        role: "user",
+        content: [
+          { type: "text", text: "Extract allergen and nutritional info..." },
+          { type: "file", data: fileBuffer, mediaType: "application/pdf" }
+        ]
+      }
+    ],
+    schema: extractionResultSchema,
+  });
+
+  return result.toTextStreamResponse();
+}`}
+                    />
+                  </CardContent>
+                </Card>
+
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-yellow-900 mb-2">⚡ Key Points</h4>
+                  <ul className="text-sm text-yellow-800 space-y-1">
+                    <li>• Both routes follow identical patterns for consistency</li>
+                    <li>• Only difference is the model provider (openai vs google)</li>
+                    <li>• Both use the same schema and system prompt</li>
+                    <li>• Streaming responses enable real-time progress updates</li>
+                    <li>• Maximum execution time: 60 seconds</li>
+                  </ul>
+                </div>
+              </div>
+            </Section>
+
+            {/* Data Schemas */}
+            <Section id="schemas" title="📋 Data Schemas">
+              <p className="text-gray-700 mb-4">
+                NutriScanner uses Zod for runtime validation and TypeScript type inference. All schemas are defined in{" "}
+                <code className="bg-gray-100 px-2 py-1 rounded text-sm">lib/schemas.ts</code>.
+              </p>
+
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Allergen Schema</h3>
+                  <CodeBlock
+                    id="allergen-schema"
+                    language="typescript"
+                    code={`export const allergenSchema = z.object({
+  gluten: z.boolean().describe("Contains gluten (Glutén)"),
+  egg: z.boolean().describe("Contains egg (Tojás)"),
+  crustaceans: z.boolean().describe("Contains crustaceans (Rák)"),
+  fish: z.boolean().describe("Contains fish (Hal)"),
+  peanut: z.boolean().describe("Contains peanut (Földimogyoró)"),
+  soy: z.boolean().describe("Contains soy (Szója)"),
+  milk: z.boolean().describe("Contains milk (Tej)"),
+  treeNuts: z.boolean().describe("Contains tree nuts (Diófélék)"),
+  celery: z.boolean().describe("Contains celery (Zeller)"),
+  mustard: z.boolean().describe("Contains mustard (Mustár)"),
+});
+
+export type Allergen = z.infer<typeof allergenSchema>;`}
+                  />
+                  <p className="text-sm text-gray-600 mt-2">
+                    All 10 fields are <strong>required</strong> and must be boolean values. Descriptions include Hungarian translations.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Nutritional Value Schema</h3>
+                  <CodeBlock
+                    id="nutrition-schema"
+                    language="typescript"
+                    code={`export const nutritionalValueSchema = z.object({
+  energy: z.string().optional().describe("Energy value (Energia) - include unit (kJ/kcal)"),
+  fat: z.string().optional().describe("Fat content (Zsír) - include unit (g)"),
+  carbohydrate: z.string().optional().describe("Carbohydrate content (Szénhidrát) - include unit (g)"),
+  sugar: z.string().optional().describe("Sugar content (Cukor) - include unit (g)"),
+  protein: z.string().optional().describe("Protein content (Fehérje) - include unit (g)"),
+  sodium: z.string().optional().describe("Sodium content (Nátrium) - include unit (mg/g)"),
+});
+
+export type NutritionalValue = z.infer<typeof nutritionalValueSchema>;`}
+                  />
+                  <p className="text-sm text-gray-600 mt-2">
+                    All fields are <strong>optional</strong> and include units as strings (e.g., "12g", "500kJ/120kcal").
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Extraction Result Schema</h3>
+                  <CodeBlock
+                    id="result-schema"
+                    language="typescript"
+                    code={`export const extractionResultSchema = z.object({
+  allergens: allergenSchema.describe("Allergen information extracted from the document"),
+  nutritionalValues: nutritionalValueSchema.describe("Nutritional values extracted from the document"),
+  detectedLanguage: z.enum(["hungarian", "english", "both", "unknown"])
+    .describe("The language detected in the document"),
+  productName: z.string().optional()
+    .describe("Product name extracted from the document content or filename"),
+  confidence: z.enum(["high", "medium", "low"])
+    .describe("REQUIRED: Confidence level of the extraction based on document quality and clarity"),
+});
+
+export type ExtractionResult = z.infer<typeof extractionResultSchema>;`}
+                  />
+                  <p className="text-sm text-gray-600 mt-2">
+                    Combines allergens, nutritional values, language detection, product name, and confidence scoring.
+                  </p>
+                </div>
+              </div>
+            </Section>
+
+            {/* Frontend Components */}
+            <Section id="frontend" title="⚛️ Frontend Components">
+              <p className="text-gray-700 mb-4">
+                The frontend uses React 19 with Next.js 15 App Router and streaming hooks from Vercel AI SDK.
+              </p>
+
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Main Page Component</h3>
+                  <CodeBlock
+                    id="main-page"
+                    language="typescript"
+                    code={`// app/(preview)/page.tsx
+"use client";
+
+import { useState } from "react";
+import { experimental_useObject as useObject } from "@ai-sdk/react";
+import { extractionResultSchema } from "@/lib/schemas";
+
+export default function NutriScanner() {
+  const [files, setFiles] = useState<File[]>([]);
+  const [selectedModel, setSelectedModel] = useState<"openai" | "gemini">("openai");
+  const [extractionResult, setExtractionResult] = useState<ExtractionResult | null>(null);
+
+  // Create hooks for each model
+  const openaiHook = useObject({
+    api: "/api/extract/openai",
+    schema: extractionResultSchema,
+    onFinish: ({ object }) => setExtractionResult(object),
+  });
+
+  const geminiHook = useObject({
+    api: "/api/extract/gemini",
+    schema: extractionResultSchema,
+    onFinish: ({ object }) => setExtractionResult(object),
+  });
+
+  // Select active hook based on model
+  const currentHook = selectedModel === "openai" ? openaiHook : geminiHook;
+  const { submit, object: partialResult, isLoading } = currentHook;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const encodedFiles = await Promise.all(
+      files.map(async (file) => ({
+        name: file.name,
+        type: file.type,
+        data: await encodeFileAsBase64(file),
+      }))
+    );
+    submit({ files: encodedFiles });
+  };
+
+  // ... render UI
+}`}
+                  />
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Results Display Component</h3>
+                  <CodeBlock
+                    id="results-table"
+                    language="typescript"
+                    code={`// components/ui/results-table.tsx
+import { ExtractionResult } from "@/lib/schemas";
+import { CheckCircle2, XCircle } from "lucide-react";
+
+export default function ResultsTable({ result }: { result: ExtractionResult }) {
+  const allergenLabels = {
+    gluten: "Gluten (Glutén)",
+    egg: "Egg (Tojás)",
+    // ... other allergens
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Product Information */}
+      <Card>
+        <CardContent>
+          <p><strong>Product:</strong> {result.productName || "Unknown"}</p>
+          <p><strong>Language:</strong> {result.detectedLanguage}</p>
+          <p><strong>Confidence:</strong> {result.confidence}</p>
+        </CardContent>
+      </Card>
+
+      {/* Allergens Table */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Allergen Information</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <table className="w-full">
+            {Object.entries(result.allergens).map(([key, value]) => (
+              <tr key={key}>
+                <td>{allergenLabels[key]}</td>
+                <td>
+                  {value ? (
+                    <CheckCircle2 className="text-green-600" />
+                  ) : (
+                    <XCircle className="text-red-600" />
+                  )}
+                </td>
+              </tr>
+            ))}
+          </table>
+        </CardContent>
+      </Card>
+
+      {/* Nutritional Values Table */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Nutritional Values</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {Object.keys(result.nutritionalValues).length > 0 ? (
+            <table className="w-full">
+              {Object.entries(result.nutritionalValues).map(([key, value]) => (
+                value && <tr key={key}><td>{key}</td><td>{value}</td></tr>
+              ))}
+            </table>
+          ) : (
+            <p className="text-gray-500">No nutritional data found</p>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}`}
+                  />
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Real-time Progress Calculation</h3>
+                  <CodeBlock
+                    id="progress"
+                    language="typescript"
+                    code={`const calculateProgress = () => {
+  if (!isLoading) return 0;
+  if (!partialResult) return 10; // Initial processing
+
+  let completed = 0;
+  const total = 3; // allergens, nutritionalValues, detectedLanguage
+
+  if (partialResult.allergens && Object.keys(partialResult.allergens).length > 0) {
+    completed += 1;
+  }
+  if (partialResult.nutritionalValues && Object.keys(partialResult.nutritionalValues).length > 0) {
+    completed += 1;
+  }
+  if (partialResult.detectedLanguage) {
+    completed += 1;
+  }
+
+  // Map to percentage (10% start + 90% for actual data)
+  return 10 + Math.round((completed / total) * 90);
+};`}
+                  />
+                </div>
+              </div>
+            </Section>
+
+            {/* AI Integration */}
+            <Section id="ai-integration" title="🤖 AI Integration">
+              <p className="text-gray-700 mb-4">
+                NutriScanner uses the Vercel AI SDK for seamless integration with multiple AI providers.
+              </p>
+
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">System Prompt Strategy</h3>
+                  <p className="text-gray-700 mb-3">
+                    The <code className="bg-gray-100 px-2 py-1 rounded text-sm">EXTRACTION_SYSTEM_PROMPT</code> in{" "}
+                    <code className="bg-gray-100 px-2 py-1 rounded text-sm">lib/system-prompt.ts</code> is a comprehensive
+                    190-line instruction set that guides the AI model on:
+                  </p>
+                  <ul className="space-y-2 text-sm text-gray-700">
                     <li className="flex items-start gap-2">
-                      <span className="text-green-600 mt-1">💰</span>
-                      <span>Cost: ~$1.10/hr on A10G GPU (only when in use) - scales to $0 when idle</span>
+                      <span className="text-blue-600 mt-1">•</span>
+                      <span><strong>Allergen Detection Rules:</strong> TRUE only for explicit "contains" statements, FALSE for "may contain traces"</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-green-600 mt-1">🚀</span>
-                      <span>24GB VRAM - Perfect for vision models with PDFs</span>
+                      <span className="text-blue-600 mt-1">•</span>
+                      <span><strong>Nutritional Value Locations:</strong> Where to find nutrition facts in Hungarian/English documents</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-green-600 mt-1">⚡</span>
-                      <span>2x faster than T4 for vision tasks</span>
+                      <span className="text-blue-600 mt-1">•</span>
+                      <span><strong>Bilingual Terminology:</strong> Both Hungarian and English terms for all fields</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-green-600 mt-1">📄</span>
-                      <span>Auto PDF→Image conversion at 200 DPI for quality OCR</span>
+                      <span className="text-blue-600 mt-1">•</span>
+                      <span><strong>Confidence Assessment:</strong> Criteria for High/Medium/Low confidence levels</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-green-600 mt-1">🌐</span>
-                      <span>OpenAI-compatible API endpoints</span>
+                      <span className="text-blue-600 mt-1">•</span>
+                      <span><strong>Example Outputs:</strong> 4 detailed examples with expected JSON structure</span>
                     </li>
                   </ul>
-                </CardContent>
-              </Card>
+                </div>
 
-              <div className="space-y-6 mt-6">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Prerequisites</h3>
-                  <ol className="space-y-3">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Streaming with streamObject</h3>
+                  <CodeBlock
+                    id="stream-object"
+                    language="typescript"
+                    code={`import { streamObject } from "ai";
+
+const result = streamObject({
+  model: openai("gpt-4o"), // or google("gemini-2.5-flash")
+  messages: [
+    { role: "system", content: EXTRACTION_SYSTEM_PROMPT },
+    {
+      role: "user",
+      content: [
+        { type: "text", text: "Extract information..." },
+        { type: "file", data: pdfBuffer, mimeType: "application/pdf" }
+      ]
+    }
+  ],
+  schema: extractionResultSchema,
+  onFinish: ({ object, error }) => {
+    if (error) {
+      console.error("Extraction error:", error);
+      return;
+    }
+    // Validate and use the extracted data
+    const validation = extractionResultSchema.safeParse(object);
+    if (validation.success) {
+      console.log("Valid extraction:", validation.data);
+    }
+  }
+});
+
+return result.toTextStreamResponse();`}
+                  />
+                </div>
+
+                <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-indigo-900 mb-2">🎯 Best Practices</h4>
+                  <ul className="text-sm text-indigo-800 space-y-1">
+                    <li>• Use <code className="bg-indigo-100 px-1 rounded">streamObject()</code> for structured extraction with real-time updates</li>
+                    <li>• Always validate responses with Zod schemas before rendering</li>
+                    <li>• Include comprehensive system prompts with examples</li>
+                    <li>• Handle both success and error cases in <code className="bg-indigo-100 px-1 rounded">onFinish</code> callback</li>
+                    <li>• Set appropriate <code className="bg-indigo-100 px-1 rounded">maxDuration</code> for API routes (60s recommended)</li>
+                  </ul>
+                </div>
+              </div>
+            </Section>
+
+            {/* Deployment */}
+            <Section id="deployment" title="🚀 Deployment">
+              <p className="text-gray-700 mb-4">
+                NutriScanner is optimized for deployment on Vercel but works on any Next.js-compatible platform.
+              </p>
+
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Vercel Deployment (Recommended)</h3>
+                  <ol className="space-y-3 text-sm text-gray-700">
                     <li className="flex gap-3">
-                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-sm font-semibold flex items-center justify-center">
-                        1
-                      </span>
-                      <div>
-                        <p className="text-gray-700">
-                          <strong>Modal Account:</strong> Sign up at{" "}
-                          <ExternalLinkButton href="https://modal.com">modal.com</ExternalLinkButton> (free tier available)
-                        </p>
-                      </div>
+                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 text-xs font-semibold flex items-center justify-center">1</span>
+                      <span>Push your repository to GitHub</span>
                     </li>
                     <li className="flex gap-3">
-                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-sm font-semibold flex items-center justify-center">
-                        2
-                      </span>
-                      <div>
-                        <p className="text-gray-700">
-                          <strong>HuggingFace Token:</strong> Get from{" "}
-                          <ExternalLinkButton href="https://huggingface.co/settings/tokens">
-                            huggingface.co/settings/tokens
-                          </ExternalLinkButton>
-                        </p>
-                      </div>
+                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 text-xs font-semibold flex items-center justify-center">2</span>
+                      <span>Import project at <ExternalLinkButton href="https://vercel.com/new">vercel.com/new</ExternalLinkButton></span>
                     </li>
                     <li className="flex gap-3">
-                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-sm font-semibold flex items-center justify-center">
-                        3
-                      </span>
-                      <div>
-                        <p className="text-gray-700">
-                          <strong>Python 3.11+:</strong> Required for Modal CLI
-                        </p>
-                      </div>
+                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 text-xs font-semibold flex items-center justify-center">3</span>
+                      <span>Add environment variables in project settings: <code className="bg-gray-100 px-1 rounded">OPENAI_API_KEY</code> and <code className="bg-gray-100 px-1 rounded">GOOGLE_GENERATIVE_AI_API_KEY</code></span>
+                    </li>
+                    <li className="flex gap-3">
+                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 text-xs font-semibold flex items-center justify-center">4</span>
+                      <span>Click "Deploy" - Vercel will automatically build and deploy</span>
                     </li>
                   </ol>
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Step 1: Install Modal CLI</h3>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Environment Variables for Production</h3>
                   <CodeBlock
-                    id="modal-install"
+                    id="prod-env"
                     language="bash"
-                    code="pip install modal"
+                    code={`OPENAI_API_KEY=sk-proj-your_production_key
+GOOGLE_GENERATIVE_AI_API_KEY=AIzaSyD_your_production_key`}
                   />
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Step 2: Authenticate Modal</h3>
-                  <CodeBlock
-                    id="modal-auth"
-                    language="bash"
-                    code="modal token new"
-                  />
-                  <p className="text-sm text-gray-600 mt-2">
-                    This will open a browser window for authentication. Follow the prompts to link your Modal account.
-                  </p>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Step 3: Set HuggingFace Secret</h3>
-                  <CodeBlock
-                    id="modal-secret"
-                    language="bash"
-                    code="modal secret create huggingface-secret HF_TOKEN=your_huggingface_token_here"
-                  />
-                  <p className="text-sm text-gray-600 mt-2">
-                    This securely stores your HuggingFace token for downloading the Qwen model.
-                  </p>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Step 4: Deploy to Modal</h3>
-                  <CodeBlock
-                    id="modal-deploy"
-                    language="bash"
-                    code="cd back_end\nmodal deploy deploy_qwen.py"
-                  />
-                  <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                    <p className="text-sm text-yellow-800 mb-2">
-                      <strong>⏱️ Deployment time:</strong> First deployment may take 5-10 minutes as Modal builds the
-                      container image, installs poppler-utils for PDF processing, and downloads the model (~6GB).
-                    </p>
-                    <p className="text-sm text-yellow-800">
-                      <strong>💡 Why A10G?</strong> A10G has 24GB VRAM vs T4's 16GB. This extra memory handles large PDFs better and is ~2x faster for vision models. Worth the extra $0.51/hr for smooth performance!
-                    </p>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Step 5: Get Your Endpoint URL</h3>
-                  <p className="text-gray-700 mb-3">
-                    After successful deployment, Modal will output URLs like:
-                  </p>
-                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                    <p className="text-sm font-mono text-gray-700">
-                      ✓ Created web function chat_completions =&gt;{" "}
-                      <span className="text-blue-600">
-                        https://yourname--nutriscan-qwen-inference-chat-completions.modal.run
-                      </span>
-                    </p>
-                  </div>
-                  <p className="text-gray-700 mt-3">
-                    Copy the <code className="bg-gray-100 px-2 py-1 rounded text-sm">web_app</code> base URL and add
-                    it to your <code className="bg-gray-100 px-2 py-1 rounded text-sm">.env</code> file:
-                  </p>
-                  <CodeBlock
-                    id="modal-url"
-                    language="bash"
-                    code="QWEN_BASE_URL=https://yourname--nutriscan-qwen-inference-qwenvlinference-web-app.modal.run"
-                  />
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Step 6: Test Your Deployment</h3>
-                  <p className="text-gray-700 mb-3">Test the health endpoint:</p>
-                  <CodeBlock
-                    id="test-health"
-                    language="bash"
-                    code="curl https://yourname--nutriscan-qwen-inference-health.modal.run"
-                  />
-                  <p className="text-gray-700 mt-4 mb-3">Test the chat completion endpoint:</p>
-                  <CodeBlock
-                    id="test-chat"
-                    language="bash"
-                    code={`curl -X POST https://yourname--nutriscan-qwen-inference-chat-completions.modal.run \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "model": "qwen2.5-vl-3b-instruct",
-    "messages": [
-      {"role": "user", "content": "Hello!"}
-    ],
-    "max_tokens": 100,
-    "temperature": 0.7
-  }'`}
-                  />
-                </div>
-              </div>
-            </Section>
-
-            {/* Environment Variables */}
-            <Section id="environment-variables" title="⚙️ Environment Variables">
-              <p className="text-gray-700 mb-4">
-                Complete reference for all environment variables used in NutriScanner.
-              </p>
-              <div className="overflow-x-auto">
-                <table className="w-full border-collapse border border-gray-300">
-                  <thead>
-                    <tr className="bg-gray-100">
-                      <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-700">
-                        Variable
-                      </th>
-                      <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-700">
-                        Description
-                      </th>
-                      <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-700">
-                        Required
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td className="border border-gray-300 px-4 py-3">
-                        <code className="text-sm bg-gray-100 px-2 py-1 rounded">OPENAI_API_KEY</code>
-                      </td>
-                      <td className="border border-gray-300 px-4 py-3 text-sm text-gray-700">
-                        OpenAI API key for GPT-4o model access
-                      </td>
-                      <td className="border border-gray-300 px-4 py-3 text-sm">
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                          Required
-                        </span>
-                      </td>
-                    </tr>
-                    <tr className="bg-gray-50">
-                      <td className="border border-gray-300 px-4 py-3">
-                        <code className="text-sm bg-gray-100 px-2 py-1 rounded">GOOGLE_GENERATIVE_AI_API_KEY</code>
-                      </td>
-                      <td className="border border-gray-300 px-4 py-3 text-sm text-gray-700">
-                        Google API key for Gemini 1.5 Pro model access
-                      </td>
-                      <td className="border border-gray-300 px-4 py-3 text-sm">
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                          Required
-                        </span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="border border-gray-300 px-4 py-3">
-                        <code className="text-sm bg-gray-100 px-2 py-1 rounded">QWEN_BASE_URL</code>
-                      </td>
-                      <td className="border border-gray-300 px-4 py-3 text-sm text-gray-700">
-                        Modal endpoint URL for self-hosted Qwen 2.5-VL model (experimental)
-                      </td>
-                      <td className="border border-gray-300 px-4 py-3 text-sm">
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                          Optional
-                        </span>
-                      </td>
-                    </tr>
-                    <tr className="bg-gray-50">
-                      <td className="border border-gray-300 px-4 py-3">
-                        <code className="text-sm bg-gray-100 px-2 py-1 rounded">QWEN_API_KEY</code>
-                      </td>
-                      <td className="border border-gray-300 px-4 py-3 text-sm text-gray-700">
-                        API key for Qwen endpoint (usually not needed for Modal)
-                      </td>
-                      <td className="border border-gray-300 px-4 py-3 text-sm">
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                          Optional
-                        </span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <p className="text-sm text-gray-600 mt-3">
-                  Note: OpenAI and Gemini are required for production use. Qwen is optional and experimental for self-hosted deployments.
-                </p>
-              </div>
-            </Section>
-
-            {/* Testing */}
-            <Section id="testing" title="🧪 Testing">
-              <p className="text-gray-700 mb-4">How to test NutriScanner with sample PDFs.</p>
-              <ol className="space-y-4">
-                <li className="flex gap-3">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 text-sm font-semibold flex items-center justify-center">
-                    1
-                  </span>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-800 mb-2">Prepare a Test PDF</h3>
-                    <p className="text-gray-700 text-sm">
-                      Use any food product label PDF (preferably in Hungarian or English) that contains nutritional
-                      information and allergen data.
-                    </p>
-                  </div>
-                </li>
-                <li className="flex gap-3">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 text-sm font-semibold flex items-center justify-center">
-                    2
-                  </span>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-800 mb-2">Select AI Model</h3>
-                    <p className="text-gray-700 text-sm">Choose between OpenAI GPT-4o (recommended), Google Gemini 1.5 Pro, or Qwen 2.5-VL (self-hosted experimental).</p>
-                  </div>
-                </li>
-                <li className="flex gap-3">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 text-sm font-semibold flex items-center justify-center">
-                    3
-                  </span>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-800 mb-2">Upload and Extract</h3>
-                    <p className="text-gray-700 text-sm">
-                      Upload your PDF and click "Extract Information". Watch the real-time progress as the AI analyzes
-                      the document.
-                    </p>
-                  </div>
-                </li>
-                <li className="flex gap-3">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 text-sm font-semibold flex items-center justify-center">
-                    4
-                  </span>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-800 mb-2">Review Results</h3>
-                    <p className="text-gray-700 text-sm">
-                      Check the extracted allergen information and nutritional values. The app will show detected
-                      language and product name if available.
-                    </p>
-                  </div>
-                </li>
-              </ol>
-            </Section>
-
-            {/* Architecture */}
-            <Section id="architecture" title="🏗️ Architecture">
-              <p className="text-gray-700 mb-4">Understanding how NutriScanner works under the hood.</p>
-
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Technology Stack</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="text-sm">Frontend</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <ul className="space-y-2 text-sm text-gray-700">
-                          <li>• Next.js 15 (App Router)</li>
-                          <li>• React 19</li>
-                          <li>• TypeScript</li>
-                          <li>• Tailwind CSS</li>
-                          <li>• Framer Motion</li>
-                          <li>• Vercel AI SDK</li>
-                        </ul>
-                      </CardContent>
-                    </Card>
-
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="text-sm">Backend</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <ul className="space-y-2 text-sm text-gray-700">
-                          <li>• Modal (serverless GPU)</li>
-                          <li>• Qwen2.5-VL-3B (vision-language)</li>
-                          <li>• PyTorch</li>
-                          <li>• Transformers</li>
-                          <li>• FastAPI</li>
-                        </ul>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Data Flow</h3>
-                  <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
-                    <ol className="space-y-3 text-sm text-gray-700">
-                      <li className="flex items-start gap-3">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white text-xs font-semibold flex items-center justify-center">
-                          1
-                        </span>
-                        <span>User uploads PDF via web interface</span>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white text-xs font-semibold flex items-center justify-center">
-                          2
-                        </span>
-                        <span>PDF is base64-encoded in the browser</span>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white text-xs font-semibold flex items-center justify-center">
-                          3
-                        </span>
-                        <span>Request sent to /api/extract with model selection</span>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white text-xs font-semibold flex items-center justify-center">
-                          4
-                        </span>
-                        <span>API route forwards to selected AI model (OpenAI, Gemini, or Qwen)</span>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white text-xs font-semibold flex items-center justify-center">
-                          5
-                        </span>
-                        <span>Vision-language model analyzes PDF and extracts structured data</span>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white text-xs font-semibold flex items-center justify-center">
-                          6
-                        </span>
-                        <span>Results validated against Zod schema</span>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white text-xs font-semibold flex items-center justify-center">
-                          7
-                        </span>
-                        <span>Streaming response displayed in real-time to user</span>
-                      </li>
-                    </ol>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Qwen Integration</h3>
-                  <p className="text-gray-700 mb-3">
-                    The Qwen model is integrated using an OpenAI-compatible API pattern:
-                  </p>
-                  <CodeBlock
-                    id="qwen-integration"
-                    language="typescript"
-                    code={`// In /app/api/extract/route.ts
-import { createOpenAI } from "@ai-sdk/openai";
-
-const qwenProvider = createOpenAI({
-  apiKey: process.env.QWEN_API_KEY || "not-needed",
-  baseURL: process.env.QWEN_BASE_URL,
-});
-
-const model = qwenProvider("qwen2.5-vl-3b-instruct");`}
-                  />
-                  <p className="text-sm text-gray-600 mt-3">
-                    This pattern makes it seamless to switch between providers - the Vercel AI SDK treats all models
-                    uniformly.
-                  </p>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Alternative Platforms</h3>
+                  <p className="text-gray-700 mb-3">NutriScanner works on:</p>
+                  <ul className="space-y-2 text-sm text-gray-700">
+                    <li>• <strong>Netlify</strong> - Configure build command: <code className="bg-gray-100 px-1 rounded">npm run build</code></li>
+                    <li>• <strong>AWS Amplify</strong> - Connect GitHub repo and configure environment variables</li>
+                    <li>• <strong>DigitalOcean App Platform</strong> - Deploy from GitHub with Node.js 18+</li>
+                    <li>• <strong>Self-hosted</strong> - Run <code className="bg-gray-100 px-1 rounded">npm run build && npm start</code> on any Node.js server</li>
+                  </ul>
                 </div>
               </div>
             </Section>
@@ -684,84 +987,63 @@ const model = qwenProvider("qwen2.5-vl-3b-instruct");`}
               <div className="space-y-4">
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-base">Modal deployment fails</CardTitle>
+                    <CardTitle className="text-base">TypeScript errors during build</CardTitle>
                   </CardHeader>
                   <CardContent className="text-sm text-gray-700 space-y-2">
-                    <p>
-                      <strong>Issue:</strong> Error during <code className="bg-gray-100 px-2 py-1 rounded">modal deploy</code>
-                    </p>
-                    <p>
-                      <strong>Solutions:</strong>
-                    </p>
+                    <p><strong>Issue:</strong> Build fails with type errors</p>
+                    <p><strong>Solutions:</strong></p>
                     <ul className="list-disc list-inside space-y-1 ml-4">
-                      <li>Verify HuggingFace token is set correctly</li>
-                      <li>Check internet connection for model download</li>
-                      <li>Ensure Modal account has sufficient credits</li>
-                      <li>Run <code className="bg-gray-100 px-2 py-1 rounded">modal token new</code> to re-authenticate</li>
+                      <li>Check <code className="bg-gray-100 px-1 rounded">next.config.mjs</code> has <code className="bg-gray-100 px-1 rounded">ignoreBuildErrors: true</code></li>
+                      <li>Run <code className="bg-gray-100 px-1 rounded">npm run build</code> locally first to catch issues</li>
+                      <li>Ensure all imports match exact file paths (case-sensitive)</li>
                     </ul>
                   </CardContent>
                 </Card>
 
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-base">Qwen model not responding</CardTitle>
+                    <CardTitle className="text-base">Streaming not working</CardTitle>
                   </CardHeader>
                   <CardContent className="text-sm text-gray-700 space-y-2">
-                    <p>
-                      <strong>Issue:</strong> Requests to Qwen model timeout or fail
-                    </p>
-                    <p>
-                      <strong>Solutions:</strong>
-                    </p>
+                    <p><strong>Issue:</strong> No real-time progress updates</p>
+                    <p><strong>Solutions:</strong></p>
                     <ul className="list-disc list-inside space-y-1 ml-4">
-                      <li>Check QWEN_BASE_URL is correct in .env</li>
-                      <li>Test health endpoint to verify deployment is active</li>
-                      <li>Cold start may take 15-20 seconds - be patient on first request</li>
-                      <li>
-                        View logs: <code className="bg-gray-100 px-2 py-1 rounded">modal app logs nutriscan-qwen-inference</code>
-                      </li>
+                      <li>Verify using <code className="bg-gray-100 px-1 rounded">experimental_useObject</code> hook</li>
+                      <li>Check API route returns <code className="bg-gray-100 px-1 rounded">result.toTextStreamResponse()</code></li>
+                      <li>Ensure schema is passed to <code className="bg-gray-100 px-1 rounded">streamObject()</code></li>
                     </ul>
                   </CardContent>
                 </Card>
 
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-base">PDF extraction returns empty results</CardTitle>
+                    <CardTitle className="text-base">Schema validation failing</CardTitle>
                   </CardHeader>
                   <CardContent className="text-sm text-gray-700 space-y-2">
-                    <p>
-                      <strong>Issue:</strong> AI model returns no data or incomplete data
-                    </p>
-                    <p>
-                      <strong>Solutions:</strong>
-                    </p>
+                    <p><strong>Issue:</strong> AI returns data that doesn't match schema</p>
+                    <p><strong>Solutions:</strong></p>
                     <ul className="list-disc list-inside space-y-1 ml-4">
-                      <li>Ensure PDF contains actual nutritional information</li>
-                      <li>Try different AI model (switch between OpenAI and Qwen)</li>
+                      <li>Check system prompt includes all required fields</li>
+                      <li>Verify schema descriptions are clear</li>
+                      <li>Log validation errors: <code className="bg-gray-100 px-1 rounded">schema.safeParse(object)</code></li>
+                      <li>Ensure confidence field is marked as required in prompt</li>
+                    </ul>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">PDF extraction quality issues</CardTitle>
+                  </CardHeader>
+                  <CardContent className="text-sm text-gray-700 space-y-2">
+                    <p><strong>Issue:</strong> Poor extraction results or missing data</p>
+                    <p><strong>Solutions:</strong></p>
+                    <ul className="list-disc list-inside space-y-1 ml-4">
+                      <li>Try switching models (OpenAI vs Gemini)</li>
                       <li>Check PDF quality - scanned images should be clear</li>
-                      <li>PDF must be under 5MB</li>
-                    </ul>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-base">High Modal costs</CardTitle>
-                  </CardHeader>
-                  <CardContent className="text-sm text-gray-700 space-y-2">
-                    <p>
-                      <strong>Issue:</strong> Modal billing higher than expected
-                    </p>
-                    <p>
-                      <strong>Solutions:</strong>
-                    </p>
-                    <ul className="list-disc list-inside space-y-1 ml-4">
-                      <li>
-                        Verify <code className="bg-gray-100 px-2 py-1 rounded">container_idle_timeout</code> is set (default 300s)
-                      </li>
-                      <li>Check for stuck containers in Modal dashboard</li>
-                      <li>Consider reducing timeout if idle time is too long</li>
-                      <li>Monitor usage in Modal dashboard regularly</li>
+                      <li>Verify PDF size is under 5MB</li>
+                      <li>Review system prompt for clarity</li>
+                      <li>Check confidence level - low confidence suggests poor quality document</li>
                     </ul>
                   </CardContent>
                 </Card>
@@ -771,8 +1053,8 @@ const model = qwenProvider("qwen2.5-vl-3b-instruct");`}
             {/* Footer */}
             <div className="pt-12 border-t border-gray-200">
               <p className="text-sm text-gray-600 text-center">
-                Built with ❤️ using Next.js, Vercel AI SDK, and Modal. For issues or questions, visit the{" "}
-                <ExternalLinkButton href="https://github.com/yourusername/nutri-scan">
+                Built with Next.js 15, Vercel AI SDK, and modern web technologies. For issues or questions, visit the{" "}
+                <ExternalLinkButton href="https://github.com/purelyricky/nutriscan">
                   GitHub repository
                 </ExternalLinkButton>
                 .
